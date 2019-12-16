@@ -4,11 +4,11 @@ import { PanelProps } from '@grafana/data';
 import Chart from 'chart.js';
 
 import TimeSeries from 'grafana/app/core/time_series2';
-import { IPanelOptions } from 'types';
+import { PanelOptions } from 'types';
 import { defaultChartConfig, defaultChartData, defaultHighlight, colors } from 'defaults';
 import 'css/filewave-piechart-panel.css';
 
-interface Props extends PanelProps<IPanelOptions> {}
+interface Props extends PanelProps<PanelOptions> {}
 let chart: any = null;
 
 export const Panel = ({ options, data, width, height }: Props) => {
@@ -44,11 +44,11 @@ export const Panel = ({ options, data, width, height }: Props) => {
     const chartValues = chartData.datasets[0].data || [];
     const index = labels.indexOf(selectedHighlight);
     const total = chartValues.reduce((x, y) => x + y, 0);
-    const number = chartValues[index] || 0;
-    const percentage = `${(number / (total / 100) || 0).toFixed()}%`;
+    const value = chartValues[index] || 0;
+    const percentage = `${(value / (total / 100) || 0).toFixed()}%`;
 
     setHighlight({
-      value: highlightValue === 'percentage' ? percentage : number.toString(),
+      value: highlightValue === 'percentage' ? percentage : value.toString(),
       label: selectedHighlight,
     });
   };
@@ -94,15 +94,15 @@ export const Panel = ({ options, data, width, height }: Props) => {
     plugins: [{ afterDraw: () => options.highlightEnabled && drawHighlight() }],
     options: {
       ...defaultChartConfig.options,
-      cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage) : 0,
+      cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 2) : 0,
       onClick: handleClick,
       legend: {
         display: options.legendEnabled,
         position: options.legendPosition,
         align: options.legendAlign,
         labels: {
-          boxWidth: parseInt(options.legendBoxWidth),
-          fontSize: parseInt(options.legendFontSize),
+          boxWidth: parseInt(options.legendBoxWidth, 0),
+          fontSize: parseInt(options.legendFontSize, 0),
           usePointStyle: options.legendUsePointStyle,
         },
       },
@@ -129,7 +129,9 @@ export const Panel = ({ options, data, width, height }: Props) => {
   };
 
   const handleClick = (_event: any, targets: any) => {
-    if (!options.linkEnabled || !targets.length) return;
+    if (!options.linkEnabled || !targets.length) {
+      return;
+    }
 
     const { labels, datasets } = chart.data;
     const targetIndex = targets[0]._index;

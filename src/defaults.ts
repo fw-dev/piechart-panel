@@ -1,6 +1,6 @@
-import { IPanelOptions, IChartConfig, IChartData, IHighlight } from 'types';
+import { PanelOptions, ChartConfig, ChartData, Highlight } from 'types';
 
-export const defaultPanelOptions: IPanelOptions = {
+export const defaultPanelOptions: PanelOptions = {
   title: 'Title',
   chartType: 'pie',
   legendEnabled: true,
@@ -21,7 +21,7 @@ export const defaultPanelOptions: IPanelOptions = {
   cutoutPercentage: '80',
 };
 
-export const defaultChartConfig: IChartConfig = {
+export const defaultChartConfig: ChartConfig = {
   type: 'pie',
   options: {
     cutoutPercentage: 80,
@@ -34,7 +34,7 @@ export const defaultChartConfig: IChartConfig = {
   },
 };
 
-export const defaultChartData: IChartData = {
+export const defaultChartData: ChartData = {
   labels: [],
   datasets: [
     {
@@ -44,7 +44,7 @@ export const defaultChartData: IChartData = {
   ],
 };
 
-export const defaultHighlight: IHighlight = {
+export const defaultHighlight: Highlight = {
   value: '',
   label: '',
 };

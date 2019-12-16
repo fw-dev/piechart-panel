@@ -2,7 +2,7 @@ import React from 'react';
 import { FormField, Select, Switch } from '@grafana/ui';
 import { PanelEditorProps } from '@grafana/data';
 
-import { IPanelOptions } from 'types';
+import { PanelOptions } from 'types';
 import { chartOptions } from 'defaults';
 import 'css/filewave-piechart-panel.css';
 
@@ -13,7 +13,7 @@ const RangeInput = ({ value, ...props }: any) => (
   </div>
 );
 
-export class Editor extends React.PureComponent<PanelEditorProps<IPanelOptions>> {
+export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> {
   handleSelectChange = (option: any, name: string) => {
     const { onOptionsChange, options } = this.props;
     onOptionsChange({

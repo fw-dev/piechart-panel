@@ -1,4 +1,4 @@
-export interface IPanelOptions {
+export interface PanelOptions {
   title: string;
   chartType: string;
   legendEnabled: boolean;
@@ -19,7 +19,7 @@ export interface IPanelOptions {
   cutoutPercentage: string;
 }
 
-export interface IChartConfig {
+export interface ChartConfig {
   type: string;
   options: {
     responsive: boolean;
@@ -32,17 +32,17 @@ export interface IChartConfig {
   };
 }
 
-export interface IDataSet {
-  data: Array<number>;
-  backgroundColor: Array<string>;
+export interface DataSet {
+  data: number[];
+  backgroundColor: string[];
 }
 
-export interface IChartData {
-  labels: Array<string>;
-  datasets: Array<IDataSet>;
+export interface ChartData {
+  labels: string[];
+  datasets: DataSet[];
 }
 
-export interface IHighlight {
+export interface Highlight {
   label: string;
   value: string;
 }
