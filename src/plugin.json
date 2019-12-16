@@ -1,0 +1,26 @@
+{
+  "type": "panel",
+  "name": "FileWave Piechart",
+  "id": "filewave-piechart-panel",
+
+  "info": {
+    "description": "FileWave Piechart Panel",
+    "author": {
+      "name": "FileWave International"
+    },
+    "keywords": ["FileWave", "Piechart"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "6.3.x",
+    "plugins": []
+  }
+}

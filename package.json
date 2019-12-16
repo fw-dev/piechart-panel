@@ -1,0 +1,22 @@
+{
+  "name": "filewave-piechart-panel",
+  "version": "1.0.0",
+  "description": "Grafana RSS Panel",
+  "scripts": {
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
+  },
+  "author": "FileWave International",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@grafana/data": "next",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "next",
+    "@types/grafana": "github:CorpGlory/types-grafana"
+  },
+  "dependencies": {
+    "chart.js": "^2.9.3"
+  }
+}
