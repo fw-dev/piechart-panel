@@ -11,9 +11,9 @@
   "author": "FileWave International",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "next",
-    "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
+    "@grafana/data": "6.5.2",
+    "@grafana/toolkit": "6.5.2",
+    "@grafana/ui": "6.5.2",
     "@types/grafana": "github:CorpGlory/types-grafana"
   },
   "dependencies": {
