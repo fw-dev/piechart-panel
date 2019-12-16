@@ -36,17 +36,18 @@ export const defaultChartConfig: IChartConfig = {
 
 export const defaultChartData: IChartData = {
   labels: [],
-  datasets: [{
-    data: [],
-    backgroundColor: [],
-  }]
+  datasets: [
+    {
+      data: [],
+      backgroundColor: [],
+    },
+  ],
 };
 
 export const defaultHighlight: IHighlight = {
   value: '',
   label: '',
 };
-
 
 export const chartOptions = {
   position: [
@@ -64,8 +65,14 @@ export const chartOptions = {
     { label: 'Pie', value: 'pie' },
     { label: 'Doughnut', value: 'doughnut' },
   ],
-  highlight: [{ label: 'test', value: 'test' }, { label: 'hallo', value: 'hallo' }],
-  highlightValue: [{ label: 'Percentage', value: 'percentage' }, { label: 'Number', value: 'number' }],
+  highlight: [
+    { label: 'test', value: 'test' },
+    { label: 'hallo', value: 'hallo' },
+  ],
+  highlightValue: [
+    { label: 'Percentage', value: 'percentage' },
+    { label: 'Number', value: 'number' },
+  ],
 };
 
 export const colors = ['#96D98D', '#8AB8FF', '#EB4034', '#EBDC34'];

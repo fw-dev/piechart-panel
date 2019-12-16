@@ -46,32 +46,19 @@ export class Editor extends React.PureComponent<PanelEditorProps<IPanelOptions>>
       <>
         <div className="section gf-form-group">
           <h5 className="section-heading">General</h5>
-          <FormField
-            labelWidth={8}
-            label="Title"
-            type="text"
-            name="title"
-            value={options.title || ''}
-            onChange={this.handleTextChange}
-          />
+          <FormField labelWidth={8} label="Title" type="text" name="title" value={options.title || ''} onChange={this.handleTextChange} />
           <FormField
             labelWidth={8}
             label="Chart type"
-            inputEl={<Select defaultValue={options.chartType} options={chartOptions.chartType} onChange={e => this.handleSelectChange(e, 'chartType')} />}
+            inputEl={
+              <Select defaultValue={options.chartType} options={chartOptions.chartType} onChange={e => this.handleSelectChange(e, 'chartType')} />
+            }
           />
           {options.chartType === 'doughnut' && (
             <FormField
               labelWidth={8}
               label="Cutout size"
-              inputEl={
-                <RangeInput
-                  name="cutoutPercentage"
-                  min="10"
-                  max="90"
-                  value={options.cutoutPercentage}
-                  onChange={this.handleTextChange}
-                />
-              }
+              inputEl={<RangeInput name="cutoutPercentage" min="10" max="90" value={options.cutoutPercentage} onChange={this.handleTextChange} />}
             />
           )}
         </div>
@@ -82,42 +69,32 @@ export class Editor extends React.PureComponent<PanelEditorProps<IPanelOptions>>
             labelWidth={8}
             label="Position"
             inputEl={
-              <Select defaultValue={options.legendPosition} options={chartOptions.position} onChange={e => this.handleSelectChange(e, 'legendPosition')} />
+              <Select
+                defaultValue={options.legendPosition}
+                options={chartOptions.position}
+                onChange={e => this.handleSelectChange(e, 'legendPosition')}
+              />
             }
           />
           <FormField
             labelWidth={8}
             label="Align"
-            inputEl={<Select defaultValue={options.legendAlign} options={chartOptions.align} onChange={e => this.handleSelectChange(e, 'legendAlign')} />}
+            inputEl={
+              <Select defaultValue={options.legendAlign} options={chartOptions.align} onChange={e => this.handleSelectChange(e, 'legendAlign')} />
+            }
           />
           <Switch label="Use point style" onChange={e => this.handleCheckboxChange(e, 'legendUsePointStyle')} checked={options.legendUsePointStyle} />
           {!options.legendUsePointStyle && (
             <FormField
               labelWidth={8}
               label="Box width"
-              inputEl={
-                <RangeInput
-                  name="legendBoxWidth"
-                  min="6"
-                  max="40"
-                  value={options.legendBoxWidth}
-                  onChange={this.handleTextChange}
-                />
-              }
+              inputEl={<RangeInput name="legendBoxWidth" min="6" max="40" value={options.legendBoxWidth} onChange={this.handleTextChange} />}
             />
           )}
           <FormField
             labelWidth={8}
             label="Font size"
-            inputEl={
-              <RangeInput
-                name="legendFontSize"
-                min="12"
-                max="24"
-                value={options.legendFontSize}
-                onChange={this.handleTextChange}
-              />
-            }
+            inputEl={<RangeInput name="legendFontSize" min="12" max="24" value={options.legendFontSize} onChange={this.handleTextChange} />}
           />
         </div>
         <div className="section gf-form-group">

@@ -18,6 +18,7 @@
   width: 100%;
 }
 
-.fw-range__value, .fw-range__input {
+.fw-range__value,
+.fw-range__input {
   margin-left: 5px;
 }

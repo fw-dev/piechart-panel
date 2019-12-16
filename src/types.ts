@@ -17,7 +17,7 @@ export interface IPanelOptions {
   valueName: string;
   aliasColors: object;
   cutoutPercentage: string;
-};
+}
 
 export interface IChartConfig {
   type: string;
@@ -28,19 +28,19 @@ export interface IChartConfig {
     cutoutPercentage: number;
     animation: {
       animateRotate: boolean;
-    }
-  }
-};
+    };
+  };
+}
 
 export interface IDataSet {
   data: Array<number>;
   backgroundColor: Array<string>;
-};
+}
 
 export interface IChartData {
   labels: Array<string>;
   datasets: Array<IDataSet>;
-};
+}
 
 export interface IHighlight {
   label: string;
