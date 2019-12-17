@@ -15,7 +15,9 @@ export interface PanelOptions {
   selectedHighlight: string;
   nullPointMode: string;
   valueName: string;
-  aliasColors: object;
+  aliasColors: {
+    [key: string]: string;
+  };
   cutoutPercentage: string;
 }
 

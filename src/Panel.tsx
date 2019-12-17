@@ -31,7 +31,7 @@ export const Panel = ({ options, data, width, height }: Props) => {
 
   useEffect(() => {
     handleDataChange(data);
-  }, [data]);
+  }, [data, options.aliasColors]);
 
   useEffect(() => {
     drawChart();
@@ -61,12 +61,13 @@ export const Panel = ({ options, data, width, height }: Props) => {
   };
 
   const formatChartData = (timeSeries: any, series: any) => {
+    const { aliasColors } = options;
     const chartData = {
       labels: timeSeries.map((serie: any) => serie.alias),
       datasets: [
         {
           data: timeSeries.map((serie: any) => serie.stats[options.valueName]),
-          backgroundColor: timeSeries.map((_serie: any, i: number) => colors[i]),
+          backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
           metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels).labels),
         },
       ],

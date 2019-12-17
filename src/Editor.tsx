@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormField, Select, Switch } from '@grafana/ui';
+import { FormField, Select, Switch, SeriesColorPicker } from '@grafana/ui';
 import { PanelEditorProps } from '@grafana/data';
 
 import { PanelOptions } from 'types';
@@ -35,6 +35,17 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     onOptionsChange({
       ...options,
       [target.name]: target.value,
+    });
+  };
+
+  handleColorPickerChange = (color: string, name: string) => {
+    const { onOptionsChange, options } = this.props;
+    onOptionsChange({
+      ...options,
+      aliasColors: {
+        ...options.aliasColors,
+        [name]: color,
+      },
     });
   };
 
@@ -96,6 +107,35 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             label="Font size"
             inputEl={<RangeInput name="legendFontSize" min="12" max="24" value={options.legendFontSize} onChange={this.handleTextChange} />}
           />
+        </div>
+        <div className="section gf-form-group">
+          <h5 className="section-heading">Custom colors</h5>
+          {data.series.map((serie: any) => (
+            <FormField
+              labelWidth={12}
+              label={serie.name}
+              inputEl={
+                <SeriesColorPicker
+                  yaxis={1}
+                  color={options.aliasColors[serie.name]}
+                  onChange={color => this.handleColorPickerChange(color, serie.name)}
+                >
+                  {({ ref, showColorPicker, hideColorPicker }) => (
+                    <div
+                      ref={ref}
+                      onMouseLeave={hideColorPicker}
+                      onClick={showColorPicker}
+                      style={{
+                        backgroundColor: options.aliasColors[serie.name] || '#dde4ed',
+                        width: '35px',
+                        height: '35px',
+                      }}
+                    />
+                  )}
+                </SeriesColorPicker>
+              }
+            />
+          ))}
         </div>
         <div className="section gf-form-group">
           <h5 className="section-heading">Link</h5>
