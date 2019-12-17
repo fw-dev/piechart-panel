@@ -65,10 +65,6 @@ export const chartOptions = {
     { label: 'Pie', value: 'pie' },
     { label: 'Doughnut', value: 'doughnut' },
   ],
-  highlight: [
-    { label: 'test', value: 'test' },
-    { label: 'hallo', value: 'hallo' },
-  ],
   highlightValue: [
     { label: 'Percentage', value: 'percentage' },
     { label: 'Number', value: 'number' },
