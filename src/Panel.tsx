@@ -91,10 +91,10 @@ export const Panel = ({ options, data, width, height }: Props) => {
     data: chartData,
     type: options.chartType,
     radius: '90%',
-    plugins: [{ afterDraw: () => options.highlightEnabled && drawHighlight() }],
+    plugins: [{ afterDraw: () => options.highlightEnabled && options.chartType === 'doughnut' && drawHighlight() }],
     options: {
       ...defaultChartConfig.options,
-      cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 2) : 0,
+      cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
       onClick: handleClick,
       legend: {
         display: options.legendEnabled,
