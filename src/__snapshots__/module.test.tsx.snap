@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Piechart Panel when doing a basic render should render correctly 1`] = `
+<Component
+  data={
+    Object {
+      "series": Array [
+        Object {
+          "fields": Array [
+            Object {
+              "calcs": null,
+              "config": Object {
+                "unit": undefined,
+              },
+              "labels": Object {
+                "__name__": "go_memstats_alloc_bytes_total",
+                "instance": "localhost:20448",
+                "job": "grafana",
+              },
+              "name": "grafana",
+              "type": "number",
+              "values": Object {
+                "buffer": Array [
+                  1078024840,
+                ],
+              },
+            },
+          ],
+          "length": 1,
+          "meta": undefined,
+          "name": "grafana",
+          "refId": "A",
+        },
+      ],
+      "state": "Done",
+      "timeRange": "",
+    }
+  }
+  height={500}
+  id={1}
+  onChangeTime={[MockFunction]}
+  onChangeTimeRange={[MockFunction]}
+  onOptionsChange={[MockFunction]}
+  options={
+    Object {
+      "aliasColors": Object {},
+      "chartType": "pie",
+      "cutoutPercentage": "80",
+      "dataUnavailableMessage": "Data unavailable",
+      "highlightEnabled": true,
+      "highlightValue": "percentage",
+      "legendAlign": "center",
+      "legendBoxWidth": "40",
+      "legendEnabled": true,
+      "legendFontSize": "12",
+      "legendPosition": "left",
+      "legendUsePointStyle": false,
+      "linkEnabled": false,
+      "linkTargetBlank": true,
+      "linkUrl": "",
+      "nullPointMode": "connected",
+      "selectedHighlight": "",
+      "valueName": "current",
+    }
+  }
+  renderCounter={null}
+  replaceVariables={[MockFunction]}
+  timeRange=""
+  timeZone=""
+  transparent={false}
+  width={500}
+>
+  <div
+    className="fw-piechart"
+    style={
+      Object {
+        "height": 500,
+        "width": 500,
+      }
+    }
+  >
+    <canvas />
+  </div>
+</Component>
+`;
