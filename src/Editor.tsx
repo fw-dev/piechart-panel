@@ -57,7 +57,14 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
       <>
         <div className="section gf-form-group">
           <h5 className="section-heading">General</h5>
-          <FormField labelWidth={8} label="Data unavailable message" type="text" name="dataUnavailableMessage" value={options.dataUnavailableMessage || ''} onChange={this.handleTextChange} />
+          <FormField
+            labelWidth={8}
+            label="Data unavailable message"
+            type="text"
+            name="dataUnavailableMessage"
+            value={options.dataUnavailableMessage || ''}
+            onChange={this.handleTextChange}
+          />
           <FormField
             labelWidth={8}
             label="Chart type"

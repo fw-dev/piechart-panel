@@ -91,16 +91,18 @@ export const Panel = ({ options, data, width, height }: Props) => {
     ...defaultChartConfig,
     data: chartData,
     type: options.chartType,
-    plugins: [{ 
-      afterDraw: () => {
-        if (!data.series.length) {
-          return drawDataUnavailableMessage();
-        }
-        if (options.highlightEnabled && options.chartType === 'doughnut') {
-          return drawHighlight()
-        }
+    plugins: [
+      {
+        afterDraw: () => {
+          if (!data.series.length) {
+            return drawDataUnavailableMessage();
+          }
+          if (options.highlightEnabled && options.chartType === 'doughnut') {
+            return drawHighlight();
+          }
+        },
       },
-    }],
+    ],
     options: {
       ...defaultChartConfig.options,
       cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
