@@ -2,10 +2,11 @@ import React, { useRef, useEffect, useState } from 'react';
 import { PanelProps } from '@grafana/data';
 // @ts-ignore
 import Chart from 'chart.js';
+// @ts-ignore
+import TimeSeries from './TimeSeries';
 
-import TimeSeries from 'grafana/app/core/time_series2';
-import { PanelOptions } from 'types';
-import { defaultChartConfig, defaultChartData, defaultHighlight, colors } from 'defaults';
+import { PanelOptions } from './types';
+import { defaultChartConfig, defaultChartData, defaultHighlight, colors } from './defaults';
 import 'css/filewave-piechart-panel.css';
 
 interface Props extends PanelProps<PanelOptions> {}
