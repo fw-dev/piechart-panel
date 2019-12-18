@@ -58,15 +58,15 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
         <div className="section gf-form-group">
           <h5 className="section-heading">General</h5>
           <FormField
-            labelWidth={8}
-            label="Data unavailable message"
+            labelWidth={10}
+            label="No data message"
             type="text"
             name="dataUnavailableMessage"
             value={options.dataUnavailableMessage || ''}
             onChange={this.handleTextChange}
           />
           <FormField
-            labelWidth={8}
+            labelWidth={10}
             label="Chart type"
             inputEl={
               <Select defaultValue={options.chartType} options={chartOptions.chartType} onChange={e => this.handleSelectChange(e, 'chartType')} />
@@ -74,7 +74,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           />
           {options.chartType === 'doughnut' && (
             <FormField
-              labelWidth={8}
+              labelWidth={10}
               label="Cutout size"
               inputEl={<RangeInput name="cutoutPercentage" min="10" max="90" value={options.cutoutPercentage} onChange={this.handleTextChange} />}
             />
