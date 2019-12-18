@@ -91,8 +91,16 @@ export const Panel = ({ options, data, width, height }: Props) => {
     ...defaultChartConfig,
     data: chartData,
     type: options.chartType,
-    radius: '90%',
-    plugins: [{ afterDraw: () => options.highlightEnabled && options.chartType === 'doughnut' && drawHighlight() }],
+    plugins: [{ 
+      afterDraw: () => {
+        if (!data.series.length) {
+          return drawDataUnavailableMessage();
+        }
+        if (options.highlightEnabled && options.chartType === 'doughnut') {
+          return drawHighlight()
+        }
+      },
+    }],
     options: {
       ...defaultChartConfig.options,
       cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
@@ -154,6 +162,14 @@ export const Panel = ({ options, data, width, height }: Props) => {
     }
     chart.options = updateChartSettings().options;
     chart.update({ duration: 0 });
+  };
+
+  const drawDataUnavailableMessage = () => {
+    const { ctx } = chart.chart;
+    const { right, bottom } = chart.chart.chartArea;
+    const xPos = right;
+    const yPos = bottom / 2;
+    drawText(ctx, options.dataUnavailableMessage, xPos, yPos, 18);
   };
 
   const drawHighlight = () => {

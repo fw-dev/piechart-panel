@@ -1,7 +1,7 @@
 import { PanelOptions, ChartConfig, ChartData, Highlight } from 'types';
 
 export const defaultPanelOptions: PanelOptions = {
-  title: 'Title',
+  dataUnavailableMessage: 'Data unavailable',
   chartType: 'pie',
   legendEnabled: true,
   legendPosition: 'left',

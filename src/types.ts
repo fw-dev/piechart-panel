@@ -1,5 +1,5 @@
 export interface PanelOptions {
-  title: string;
+  dataUnavailableMessage: string;
   chartType: string;
   legendEnabled: boolean;
   legendPosition: string;
