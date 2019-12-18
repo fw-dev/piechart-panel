@@ -108,35 +108,37 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             inputEl={<RangeInput name="legendFontSize" min="12" max="24" value={options.legendFontSize} onChange={this.handleTextChange} />}
           />
         </div>
-        <div className="section gf-form-group">
-          <h5 className="section-heading">Custom colors</h5>
-          {data.series.map((serie: any) => (
-            <FormField
-              labelWidth={12}
-              label={serie.name}
-              inputEl={
-                <SeriesColorPicker
-                  yaxis={1}
-                  color={options.aliasColors[serie.name]}
-                  onChange={color => this.handleColorPickerChange(color, serie.name)}
-                >
-                  {({ ref, showColorPicker, hideColorPicker }) => (
-                    <div
-                      ref={ref}
-                      onMouseLeave={hideColorPicker}
-                      onClick={showColorPicker}
-                      style={{
-                        backgroundColor: options.aliasColors[serie.name] || '#dde4ed',
-                        width: '35px',
-                        height: '35px',
-                      }}
-                    />
-                  )}
-                </SeriesColorPicker>
-              }
-            />
-          ))}
-        </div>
+        {data.series.length > 0 && (
+          <div className="section gf-form-group">
+            <h5 className="section-heading">Custom colors</h5>
+            {data.series.map((serie: any) => (
+              <FormField
+                labelWidth={12}
+                label={serie.name}
+                inputEl={
+                  <SeriesColorPicker
+                    yaxis={1}
+                    color={options.aliasColors[serie.name]}
+                    onChange={color => this.handleColorPickerChange(color, serie.name)}
+                  >
+                    {({ ref, showColorPicker, hideColorPicker }) => (
+                      <div
+                        ref={ref}
+                        onMouseLeave={hideColorPicker}
+                        onClick={showColorPicker}
+                        style={{
+                          backgroundColor: options.aliasColors[serie.name] || '#dde4ed',
+                          width: '35px',
+                          height: '35px',
+                        }}
+                      />
+                    )}
+                  </SeriesColorPicker>
+                }
+              />
+            ))}
+          </div>
+        )}
         <div className="section gf-form-group">
           <h5 className="section-heading">Link</h5>
           <Switch label="Add a link" onChange={e => this.handleCheckboxChange(e, 'linkEnabled')} checked={options.linkEnabled} />
