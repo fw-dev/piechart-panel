@@ -34,6 +34,11 @@ export interface ChartConfig {
   };
 }
 
+export interface State {
+  chartData: ChartData;
+  highlight: Highlight;
+}
+
 export interface DataSet {
   data: number[];
   backgroundColor: string[];

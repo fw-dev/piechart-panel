@@ -1,4 +1,4 @@
-import { PanelOptions, ChartConfig, ChartData, Highlight } from 'types';
+import { PanelOptions, ChartConfig } from 'types';
 
 export const defaultPanelOptions: PanelOptions = {
   dataUnavailableMessage: 'Data unavailable',
@@ -34,7 +34,7 @@ export const defaultChartConfig: ChartConfig = {
   },
 };
 
-export const defaultChartData: ChartData = {
+export const defaultChartData = {
   labels: [],
   datasets: [
     {
@@ -44,7 +44,7 @@ export const defaultChartData: ChartData = {
   ],
 };
 
-export const defaultHighlight: Highlight = {
+export const defaultHighlight = {
   value: '',
   label: '',
 };

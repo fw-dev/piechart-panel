@@ -1,67 +1,79 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import { PanelProps } from '@grafana/data';
 // @ts-ignore
 import Chart from 'chart.js';
 // @ts-ignore
 import TimeSeries from './TimeSeries';
 
-import { PanelOptions } from './types';
+import { PanelOptions, State } from './types';
 import { defaultChartConfig, defaultChartData, defaultHighlight, colors } from './defaults';
 import 'css/filewave-piechart-panel.css';
 
 interface Props extends PanelProps<PanelOptions> {}
-let chart: any = null;
 
-export const Panel = ({ options, data, width, height }: Props) => {
-  const chartRef = useRef(null);
-  const [chartData, setChartData] = useState(defaultChartData);
-  const [highlight, setHighlight] = useState(defaultHighlight);
+export class Panel extends React.PureComponent<Props, State> {
+  private chart: any;
 
-  useEffect(() => {
-    // Mounting
-    drawChart();
-  }, []);
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      chartData: defaultChartData,
+      highlight: defaultHighlight,
+    };
+    this.chart = React.createRef();
+  }
 
-  useEffect(() => {
-    redrawChart();
-  }, [options]);
+  componentDidMount() {
+    this.handleDataFormatting(this.props.data);
+  }
 
-  useEffect(() => {
-    drawChart();
-  }, [highlight, options.highlightEnabled]);
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { options, data } = this.props;
+    const { highlight, chartData } = this.state;
 
-  useEffect(() => {
-    handleDataChange(data);
-  }, [data, options.aliasColors]);
+    if (options !== prevProps.options) {
+      this.updateChart();
+    }
 
-  useEffect(() => {
-    drawChart();
-    updateHighlight();
-  }, [chartData]);
+    if (highlight !== prevState.highlight && options.highlightEnabled) {
+      this.drawChart();
+    }
 
-  const updateHighlight = () => {
-    const { selectedHighlight, highlightValue } = options;
-    const labels = chartData.labels;
+    if (data !== prevProps.data || options.aliasColors !== prevProps.options.aliasColors) {
+      this.handleDataFormatting(data);
+    }
+
+    if (chartData !== prevState.chartData) {
+      this.updateHighlight();
+    }
+  }
+
+  updateHighlight = () => {
+    const { selectedHighlight, highlightValue } = this.props.options;
+    const { chartData } = this.state;
     const chartValues = chartData.datasets[0].data || [];
-    const index = labels.indexOf(selectedHighlight);
-    const total = chartValues.reduce((x, y) => x + y, 0);
-    const value = chartValues[index] || 0;
+    const highlightIndex = chartData.labels.indexOf(selectedHighlight);
+    const total = chartValues.reduce((x: number, y: number) => x + y, 0);
+    const value = chartValues[highlightIndex] || 0;
     const percentage = `${(value / (total / 100) || 0).toFixed()}%`;
 
-    setHighlight({
-      value: highlightValue === 'percentage' ? percentage : value.toString(),
-      label: selectedHighlight,
+    this.setState({
+      highlight: {
+        value: highlightValue === 'percentage' ? percentage : value.toString(),
+        label: selectedHighlight,
+      },
     });
   };
 
-  const handleDataChange = (data: any) => {
-    const timeSeries = data.series.map((serie: any) => createTimeSeries(serie));
-    const updatedData = formatChartData(timeSeries, data.series);
-    setChartData(updatedData);
-    drawChart();
+  handleDataFormatting = (data: any) => {
+    const timeSeries = data.series.map((serie: any) => this.createTimeSeries(serie));
+    const chartData = this.formatChartData(timeSeries, data.series);
+    this.setState({ chartData });
+    this.drawChart();
   };
 
-  const formatChartData = (timeSeries: any, series: any) => {
+  formatChartData = (timeSeries: any, series: any) => {
+    const { options } = this.props;
     const { aliasColors } = options;
     const chartData = {
       labels: timeSeries.map((serie: any) => serie.alias),
@@ -77,52 +89,55 @@ export const Panel = ({ options, data, width, height }: Props) => {
     return chartData;
   };
 
-  const createTimeSeries = (serie: any) => {
+  createTimeSeries = (serie: any) => {
     const timeSeries = new TimeSeries({
       datapoints: [serie.fields.map((field: any) => field.values.buffer[0])],
       alias: serie.name,
       target: serie.name,
     });
-    timeSeries.flotpairs = timeSeries.getFlotPairs(options.nullPointMode);
+    timeSeries.flotpairs = timeSeries.getFlotPairs(this.props.options.nullPointMode);
 
     return timeSeries;
   };
 
-  const updateChartSettings = () => ({
-    ...defaultChartConfig,
-    data: chartData,
-    type: options.chartType,
-    plugins: [
-      {
-        afterDraw: () => {
-          if (!data.series.length) {
-            return drawDataUnavailableMessage();
-          }
-          if (options.highlightEnabled && options.chartType === 'doughnut') {
-            return drawHighlight();
-          }
+  updateChartSettings = () => {
+    const { options, data } = this.props;
+    return {
+      ...defaultChartConfig,
+      data: this.state.chartData,
+      type: options.chartType,
+      plugins: [
+        {
+          afterDraw: () => {
+            if (!data.series.length) {
+              return this.drawDataUnavailableMessage();
+            }
+            if (options.highlightEnabled && options.chartType === 'doughnut') {
+              return this.drawHighlight();
+            }
+          },
+        },
+      ],
+      options: {
+        ...defaultChartConfig.options,
+        cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
+        onClick: this.handleClick,
+        legend: {
+          display: options.legendEnabled,
+          position: options.legendPosition,
+          align: options.legendAlign,
+          labels: {
+            boxWidth: parseInt(options.legendBoxWidth, 0),
+            fontSize: parseInt(options.legendFontSize, 0),
+            usePointStyle: options.legendUsePointStyle,
+          },
         },
       },
-    ],
-    options: {
-      ...defaultChartConfig.options,
-      cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
-      onClick: handleClick,
-      legend: {
-        display: options.legendEnabled,
-        position: options.legendPosition,
-        align: options.legendAlign,
-        labels: {
-          boxWidth: parseInt(options.legendBoxWidth, 0),
-          fontSize: parseInt(options.legendFontSize, 0),
-          usePointStyle: options.legendUsePointStyle,
-        },
-      },
-    },
-  });
+    };
+  };
 
-  const generateUrl = (target: any) => {
-    const { linkUrl } = options;
+  generateUrl = (target: any) => {
+    const { linkUrl } = this.props.options;
     let url = linkUrl;
     const variableRegex = /(\${__)(.*?)(})/g; // Match anything that's written between ${__...}
     const queryVariables = Object.keys(target.metadata).map((variable: string) => ({ name: variable, value: target.metadata[variable] }));
@@ -140,14 +155,15 @@ export const Panel = ({ options, data, width, height }: Props) => {
     return url;
   };
 
-  const handleClick = (_event: any, targets: any) => {
+  handleClick = (_event: any, targets: any) => {
+    const { options } = this.props;
     if (!options.linkEnabled || !targets.length) {
       return;
     }
 
-    const { labels, datasets } = chart.data;
+    const { labels, datasets } = this.chart.data;
     const targetIndex = targets[0]._index;
-    const url = generateUrl({
+    const url = this.generateUrl({
       label: labels[targetIndex],
       value: datasets[0].data[targetIndex],
       metadata: datasets[0].metadata[targetIndex],
@@ -156,38 +172,39 @@ export const Panel = ({ options, data, width, height }: Props) => {
     return window.open(url, options.linkTargetBlank ? '_blank' : 'currentWindow');
   };
 
-  const redrawChart = () => {
-    if (chart.config.type !== options.chartType) {
-      return drawChart();
+  updateChart = () => {
+    const { options } = this.props;
+    if (this.chart.config.type !== options.chartType) {
+      return this.drawChart();
     }
     if (options.highlightEnabled && options.selectedHighlight) {
-      updateHighlight();
+      this.updateHighlight();
     }
-    chart.options = updateChartSettings().options;
-    chart.update({ duration: 0 });
+    this.chart.options = this.updateChartSettings().options;
+    this.chart.update({ duration: 0 });
   };
 
-  const drawDataUnavailableMessage = () => {
-    const { ctx } = chart.chart;
-    const { right, bottom } = chart.chart.chartArea;
+  drawDataUnavailableMessage = () => {
+    const { ctx } = this.chart.chart;
+    const { right, bottom } = this.chart.chart.chartArea;
     const xPos = right;
     const yPos = bottom / 2;
-    drawText(ctx, options.dataUnavailableMessage, xPos, yPos, 18);
+    this.drawText(ctx, this.props.options.dataUnavailableMessage, xPos, yPos, 18);
   };
 
-  const drawHighlight = () => {
-    const { ctx } = chart.chart;
-    const { position } = chart.legend;
-    const { left, right, top, bottom } = chart.chart.chartArea;
-    const { width, height } = chart.chart;
-    const { label, value } = highlight;
+  drawHighlight = () => {
+    const { ctx } = this.chart.chart;
+    const { position } = this.chart.legend;
+    const { left, right, top, bottom } = this.chart.chart.chartArea;
+    const { width, height } = this.chart.chart;
+    const { label, value } = this.state.highlight;
     const xPos = Math.round(position === 'left' ? width + left : right);
     const yPos = (position === 'top' ? height + top : bottom) / 2;
-    drawText(ctx, value, xPos, yPos - 5, 32);
-    drawText(ctx, label, xPos, yPos + 25, 18);
+    this.drawText(ctx, value, xPos, yPos - 5, 32);
+    this.drawText(ctx, label, xPos, yPos + 25, 18);
   };
 
-  const drawText = (ctx: any, value: string, xPos: number, yPos: number, fontSize: number) => {
+  drawText = (ctx: any, value: string, xPos: number, yPos: number, fontSize: number) => {
     ctx.restore();
     ctx.textBaseline = 'middle';
     ctx.font = `${fontSize}px sans-serif`;
@@ -197,17 +214,20 @@ export const Panel = ({ options, data, width, height }: Props) => {
     ctx.save();
   };
 
-  const drawChart = () => {
-    if (chart !== null) {
+  drawChart = () => {
+    if (this.chart.id >= 0) {
       // Destroy the chart, otherwise it will add another one to the canvas
-      chart.destroy();
+      this.chart.destroy();
     }
-    chart = new Chart(chartRef.current, { ...updateChartSettings() });
+    this.chart = new Chart(this.chart.current, { ...this.updateChartSettings() });
   };
 
-  return (
-    <div className="fw-piechart" style={{ width, height }}>
-      <canvas ref={chartRef} />
-    </div>
-  );
-};
+  render() {
+    const { width, height } = this.props;
+    return (
+      <div className="fw-piechart" style={{ width, height }}>
+        <canvas ref={this.chart} />
+      </div>
+    );
+  }
+}
