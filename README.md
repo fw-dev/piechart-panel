@@ -3,7 +3,6 @@
 This is a custom piechart panel made by FileWave.
 
 TODO:
-- Add color configuration
 - Add tooltip configuration
 - Improve hovering/clicking look and feel
 
