@@ -34,19 +34,24 @@ export const defaultChartConfig: ChartConfig = {
   },
 };
 
-export const defaultChartData = {
-  labels: [],
-  datasets: [
-    {
-      data: [],
-      backgroundColor: [],
-    },
-  ],
+export const defaultHighlight = {
+  label: '',
+  values: {
+    number: 0,
+    percentage: '',
+  },
 };
 
-export const defaultHighlight = {
-  value: '',
-  label: '',
+export const initialState = {
+  chartData: {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [],
+    }],
+  },
+  highlight: defaultHighlight,
+  highlightData: [defaultHighlight],
 };
 
 export const chartOptions = {

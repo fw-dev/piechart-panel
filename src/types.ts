@@ -1,3 +1,7 @@
+import { PanelProps } from '@grafana/data';
+
+export interface Props extends PanelProps<PanelOptions> {}
+
 export interface PanelOptions {
   dataUnavailableMessage: string;
   chartType: string;
@@ -37,6 +41,7 @@ export interface ChartConfig {
 export interface State {
   chartData: ChartData;
   highlight: Highlight;
+  highlightData: Highlight[];
 }
 
 export interface DataSet {
@@ -51,5 +56,9 @@ export interface ChartData {
 
 export interface Highlight {
   label: string;
-  value: string;
+  values: {
+    [key: string]: any;
+    percentage: string;
+    number: number;
+  }
 }

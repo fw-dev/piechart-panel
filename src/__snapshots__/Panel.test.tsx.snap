@@ -79,7 +79,9 @@ exports[`Piechart Panel when doing a basic render with data should render correc
       }
     }
   >
-    <canvas />
+    <canvas
+      id="chart"
+    />
   </div>
 </Panel>
 `;

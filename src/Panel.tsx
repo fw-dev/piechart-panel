@@ -1,28 +1,17 @@
 import React from 'react';
-import { PanelProps } from '@grafana/data';
 // @ts-ignore
 import Chart from 'chart.js';
 // @ts-ignore
 import TimeSeries from './TimeSeries';
 
-import { PanelOptions, State } from './types';
-import { defaultChartConfig, defaultChartData, defaultHighlight, colors } from './defaults';
+import { State, Props } from './types';
+import { defaultChartConfig, initialState, colors, defaultHighlight } from './defaults';
 import 'css/filewave-piechart-panel.css';
 
-interface Props extends PanelProps<PanelOptions> {}
-
-export class Panel extends React.PureComponent<Props, State> {
-  private chart: any;
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      chartData: defaultChartData,
-      highlight: defaultHighlight,
-    };
-    this.chart = React.createRef();
-  }
-
+export class Panel extends React.Component<Props, State> {
+  chart: any;
+  state = initialState;
+  
   componentDidMount() {
     this.handleDataFormatting(this.props.data);
   }
@@ -35,7 +24,7 @@ export class Panel extends React.PureComponent<Props, State> {
       this.updateChart();
     }
 
-    if (highlight !== prevState.highlight && options.highlightEnabled) {
+    if (highlight !== prevState.highlight || options.highlightEnabled !== prevProps.options.highlightEnabled) {
       this.drawChart();
     }
 
@@ -49,37 +38,43 @@ export class Panel extends React.PureComponent<Props, State> {
   }
 
   updateHighlight = () => {
-    const { selectedHighlight, highlightValue } = this.props.options;
-    const { chartData } = this.state;
-    const chartValues = chartData.datasets[0].data || [];
-    const highlightIndex = chartData.labels.indexOf(selectedHighlight);
-    const total = chartValues.reduce((x: number, y: number) => x + y, 0);
-    const value = chartValues[highlightIndex] || 0;
-    const percentage = `${(value / (total / 100) || 0).toFixed()}%`;
-
-    this.setState({
-      highlight: {
-        value: highlightValue === 'percentage' ? percentage : value.toString(),
-        label: selectedHighlight,
-      },
-    });
+    const { selectedHighlight } = this.props.options;
+    const { highlightData } = this.state;
+    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight) || defaultHighlight;
+    this.setState({ highlight });
   };
 
   handleDataFormatting = (data: any) => {
     const timeSeries = data.series.map((serie: any) => this.createTimeSeries(serie));
     const chartData = this.formatChartData(timeSeries, data.series);
-    this.setState({ chartData });
-    this.drawChart();
+    const highlightData = this.formatHighlightData(timeSeries);
+    this.setState({
+      chartData,
+      highlightData,
+    });
   };
 
-  formatChartData = (timeSeries: any, series: any) => {
+  formatHighlightData = (timeSeries: any) => {
     const { options } = this.props;
-    const { aliasColors } = options;
+    const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
+    const highlightData = timeSeries.map((serie: any) => ({
+      label: serie.label,
+      values: {
+        number: serie.stats[options.valueName],
+        percentage: `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`,
+      },
+    }));
+
+    return highlightData;
+  }
+
+  formatChartData = (timeSeries: any, series: any) => {
+    const { valueName, aliasColors } = this.props.options;
     const chartData = {
       labels: timeSeries.map((serie: any) => serie.alias),
       datasets: [
         {
-          data: timeSeries.map((serie: any) => serie.stats[options.valueName]),
+          data: timeSeries.map((serie: any) => serie.stats[valueName]),
           backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
           metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels).labels),
         },
@@ -155,7 +150,7 @@ export class Panel extends React.PureComponent<Props, State> {
     return url;
   };
 
-  handleClick = (_event: any, targets: any) => {
+  handleClick = (_event: Event, targets: any) => {
     const { options } = this.props;
     if (!options.linkEnabled || !targets.length) {
       return;
@@ -185,26 +180,24 @@ export class Panel extends React.PureComponent<Props, State> {
   };
 
   drawDataUnavailableMessage = () => {
-    const { ctx } = this.chart.chart;
-    const { right, bottom } = this.chart.chart.chartArea;
+    const { ctx, chartArea: { right, bottom }} = this.chart.chart;
     const xPos = right;
     const yPos = bottom / 2;
     this.drawText(ctx, this.props.options.dataUnavailableMessage, xPos, yPos, 18);
   };
 
   drawHighlight = () => {
-    const { ctx } = this.chart.chart;
+    const { ctx, width, height, chartArea: { left, right, top, bottom }} = this.chart.chart;
     const { position } = this.chart.legend;
-    const { left, right, top, bottom } = this.chart.chart.chartArea;
-    const { width, height } = this.chart.chart;
-    const { label, value } = this.state.highlight;
+    const { highlightValue } = this.props.options;
+    const { label, values } = this.state.highlight;
     const xPos = Math.round(position === 'left' ? width + left : right);
     const yPos = (position === 'top' ? height + top : bottom) / 2;
-    this.drawText(ctx, value, xPos, yPos - 5, 32);
+    this.drawText(ctx, values[highlightValue], xPos, yPos - 5, 32);
     this.drawText(ctx, label, xPos, yPos + 25, 18);
   };
 
-  drawText = (ctx: any, value: string, xPos: number, yPos: number, fontSize: number) => {
+  drawText = (ctx: any, value: any, xPos: number, yPos: number, fontSize: number) => {
     ctx.restore();
     ctx.textBaseline = 'middle';
     ctx.font = `${fontSize}px sans-serif`;
@@ -215,18 +208,22 @@ export class Panel extends React.PureComponent<Props, State> {
   };
 
   drawChart = () => {
-    if (this.chart.id >= 0) {
-      // Destroy the chart, otherwise it will add another one to the canvas
+    const canvas: HTMLElement | HTMLCanvasElement | null = document.getElementById('chart');
+    if (this.chart && this.chart.id >= 0) {
+      // If a chart exists, destroy it, otherwise it will add another one to the canvas
       this.chart.destroy();
     }
-    this.chart = new Chart(this.chart.current, { ...this.updateChartSettings() });
+
+    if (canvas instanceof HTMLCanvasElement) {
+      this.chart = new Chart(canvas.getContext('2d'), { ...this.updateChartSettings() });
+    }
   };
 
   render() {
     const { width, height } = this.props;
     return (
       <div className="fw-piechart" style={{ width, height }}>
-        <canvas ref={this.chart} />
+        <canvas id="chart" />
       </div>
     );
   }
