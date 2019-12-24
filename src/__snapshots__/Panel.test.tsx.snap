@@ -4,6 +4,45 @@ exports[`Piechart Panel when doing a basic render with data should render correc
 <Panel
   data={
     Object {
+      "error": undefined,
+      "request": Object {
+        "cacheTimeout": null,
+        "dashboardId": 11,
+        "endTime": 1577184404002,
+        "interval": "1m",
+        "intervalMs": 60000,
+        "maxDataPoints": 449,
+        "panelId": 2,
+        "range": Object {},
+        "rangeRaw": Object {
+          "from": "now-6h",
+          "to": "now",
+        },
+        "requestId": "Q100",
+        "scopedVars": Object {
+          "__interval": Object {
+            "text": "1m",
+            "value": "1m",
+          },
+          "__interval_ms": Object {
+            "text": "60000",
+            "value": 60000,
+          },
+        },
+        "startTime": 1577184403903,
+        "targets": Array [
+          Object {
+            "datasource": "FileWave Prometheus",
+            "expr": "go_memstats_alloc_bytes_total",
+            "instant": true,
+            "legendFormat": "{{job}}",
+            "refId": "A",
+            "requestId": "2A",
+          },
+        ],
+        "timeInfo": "",
+        "timezone": "browser",
+      },
       "series": Array [
         Object {
           "fields": Array [
@@ -33,7 +72,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         },
       ],
       "state": "Done",
-      "timeRange": "",
+      "timeRange": Object {},
     }
   }
   height={500}
@@ -80,7 +119,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
     }
   >
     <canvas
-      id="chart"
+      id="fw-piechart-2"
     />
   </div>
 </Panel>

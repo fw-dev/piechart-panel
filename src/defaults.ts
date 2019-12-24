@@ -36,19 +36,18 @@ export const defaultChartConfig: ChartConfig = {
 
 export const defaultHighlight = {
   label: '',
-  values: {
-    number: 0,
-    percentage: '',
-  },
+  value: 0,
 };
 
 export const initialState = {
   chartData: {
     labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: [],
-    }],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+      },
+    ],
   },
   highlight: defaultHighlight,
   highlightData: [defaultHighlight],

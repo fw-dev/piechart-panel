@@ -12,7 +12,7 @@ export class Panel extends React.Component<Props, State> {
   panelId: number | undefined = this.props.data.request && this.props.data.request.panelId;
   chart: any;
   state = initialState;
-  
+
   componentDidMount() {
     this.handleDataFormatting(this.props.data);
   }
@@ -25,7 +25,7 @@ export class Panel extends React.Component<Props, State> {
       this.updateChart();
     }
 
-    if (highlight !== prevState.highlight || options.highlightEnabled !== prevProps.options.highlightEnabled) {
+    if (highlight.label !== prevState.highlight.label || options.highlightEnabled !== prevProps.options.highlightEnabled) {
       this.drawChart();
     }
 
@@ -58,16 +58,18 @@ export class Panel extends React.Component<Props, State> {
   formatHighlightData = (timeSeries: any) => {
     const { options } = this.props;
     const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
-    const highlightData = timeSeries.map((serie: any) => ({
-      label: serie.label,
-      values: {
-        number: serie.stats[options.valueName],
-        percentage: `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`,
-      },
-    }));
+    const { highlightValue } = this.props.options;
+    const highlightData = timeSeries.map((serie: any) => {
+      const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
+      const value = serie.stats[options.valueName];
+      return {
+        label: serie.label,
+        value: highlightValue === 'percentage' ? percentage : value,
+      };
+    });
 
     return highlightData;
-  }
+  };
 
   formatChartData = (timeSeries: any, series: any) => {
     const { valueName, aliasColors } = this.props.options;
@@ -181,20 +183,27 @@ export class Panel extends React.Component<Props, State> {
   };
 
   drawDataUnavailableMessage = () => {
-    const { ctx, chartArea: { right, bottom }} = this.chart.chart;
+    const {
+      ctx,
+      chartArea: { right, bottom },
+    } = this.chart.chart;
     const xPos = right;
     const yPos = bottom / 2;
     this.drawText(ctx, this.props.options.dataUnavailableMessage, xPos, yPos, 18);
   };
 
   drawHighlight = () => {
-    const { ctx, width, height, chartArea: { left, right, top, bottom }} = this.chart.chart;
+    const {
+      ctx,
+      width,
+      height,
+      chartArea: { left, right, top, bottom },
+    } = this.chart.chart;
     const { position } = this.chart.legend;
-    const { highlightValue } = this.props.options;
-    const { label, values } = this.state.highlight;
+    const { label, value } = this.state.highlight;
     const xPos = Math.round(position === 'left' ? width + left : right);
     const yPos = (position === 'top' ? height + top : bottom) / 2;
-    this.drawText(ctx, values[highlightValue], xPos, yPos - 5, 32);
+    this.drawText(ctx, value, xPos, yPos - 5, 32);
     this.drawText(ctx, label, xPos, yPos + 25, 18);
   };
 

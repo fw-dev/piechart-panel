@@ -56,9 +56,5 @@ export interface ChartData {
 
 export interface Highlight {
   label: string;
-  values: {
-    [key: string]: any;
-    percentage: string;
-    number: number;
-  }
+  value: string | number;
 }
