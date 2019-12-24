@@ -9,6 +9,7 @@ import { defaultChartConfig, initialState, colors, defaultHighlight } from './de
 import 'css/filewave-piechart-panel.css';
 
 export class Panel extends React.Component<Props, State> {
+  panelId: number | undefined = this.props.data.request && this.props.data.request.panelId;
   chart: any;
   state = initialState;
   
@@ -208,7 +209,7 @@ export class Panel extends React.Component<Props, State> {
   };
 
   drawChart = () => {
-    const canvas: HTMLElement | HTMLCanvasElement | null = document.getElementById('chart');
+    const canvas: HTMLElement | HTMLCanvasElement | null = document.getElementById(`fw-piechart-${this.panelId}`);
     if (this.chart && this.chart.id >= 0) {
       // If a chart exists, destroy it, otherwise it will add another one to the canvas
       this.chart.destroy();
@@ -223,7 +224,7 @@ export class Panel extends React.Component<Props, State> {
     const { width, height } = this.props;
     return (
       <div className="fw-piechart" style={{ width, height }}>
-        <canvas id="chart" />
+        <canvas id={`fw-piechart-${this.panelId}`} />
       </div>
     );
   }
