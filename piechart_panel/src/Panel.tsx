@@ -1,11 +1,10 @@
 import React from 'react';
 // @ts-ignore
 import Chart from 'chart.js';
-// @ts-ignore
-import TimeSeries from './TimeSeries';
 
 import { State, Props } from './types';
-import { defaultChartConfig, initialState, colors, defaultHighlight } from './defaults';
+import { defaultChartConfig, initialState, defaultHighlight } from './defaults';
+import { formatChartData, formatHighlightData, createTimeSeries, createUrl } from './utils';
 import 'css/filewave-piechart-panel.css';
 
 export class Panel extends React.Component<Props, State> {
@@ -18,23 +17,23 @@ export class Panel extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { options, data } = this.props;
+    const { options: { highlightEnabled, aliasColors }, data } = this.props;
     const { highlight, chartData } = this.state;
 
-    if (options !== prevProps.options) {
+    if (this.props.options !== prevProps.options) {
       this.updateChart();
-    }
-
-    if (highlight.label !== prevState.highlight.label || options.highlightEnabled !== prevProps.options.highlightEnabled) {
-      this.drawChart();
-    }
-
-    if (data !== prevProps.data || options.aliasColors !== prevProps.options.aliasColors) {
-      this.handleDataFormatting(data);
     }
 
     if (chartData !== prevState.chartData) {
       this.updateHighlight();
+    }
+
+    if (highlight.label !== prevState.highlight.label || highlightEnabled !== prevProps.options.highlightEnabled) {
+      this.drawChart();
+    }
+
+    if (data !== prevProps.data || aliasColors !== prevProps.options.aliasColors) {
+      this.handleDataFormatting(data);
     }
   }
 
@@ -46,56 +45,14 @@ export class Panel extends React.Component<Props, State> {
   };
 
   handleDataFormatting = (data: any) => {
-    const timeSeries = data.series.map((serie: any) => this.createTimeSeries(serie));
-    const chartData = this.formatChartData(timeSeries, data.series);
-    const highlightData = this.formatHighlightData(timeSeries);
+    const { options } = this.props;
+    const timeSeries = data.series.map((serie: any) => createTimeSeries(serie, options));
+    const chartData = formatChartData(timeSeries, data.series, options);
+    const highlightData = formatHighlightData(timeSeries, options);
     this.setState({
       chartData,
       highlightData,
-    });
-  };
-
-  formatHighlightData = (timeSeries: any) => {
-    const { options } = this.props;
-    const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
-    const { highlightValue } = this.props.options;
-    const highlightData = timeSeries.map((serie: any) => {
-      const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
-      const value = serie.stats[options.valueName];
-      return {
-        label: serie.label,
-        value: highlightValue === 'percentage' ? percentage : value,
-      };
-    });
-
-    return highlightData;
-  };
-
-  formatChartData = (timeSeries: any, series: any) => {
-    const { valueName, aliasColors } = this.props.options;
-    const chartData = {
-      labels: timeSeries.map((serie: any) => serie.alias),
-      datasets: [
-        {
-          data: timeSeries.map((serie: any) => serie.stats[valueName]),
-          backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
-          metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels).labels),
-        },
-      ],
-    };
-
-    return chartData;
-  };
-
-  createTimeSeries = (serie: any) => {
-    const timeSeries = new TimeSeries({
-      datapoints: [serie.fields.map((field: any) => field.values.buffer[0])],
-      alias: serie.name,
-      target: serie.name,
-    });
-    timeSeries.flotpairs = timeSeries.getFlotPairs(this.props.options.nullPointMode);
-
-    return timeSeries;
+    }, () => this.drawChart());
   };
 
   updateChartSettings = () => {
@@ -134,25 +91,6 @@ export class Panel extends React.Component<Props, State> {
     };
   };
 
-  generateUrl = (target: any) => {
-    const { linkUrl } = this.props.options;
-    let url = linkUrl;
-    const variableRegex = /(\${__)(.*?)(})/g; // Match anything that's written between ${__...}
-    const queryVariables = Object.keys(target.metadata).map((variable: string) => ({ name: variable, value: target.metadata[variable] }));
-    const vars = [...queryVariables];
-    // @ts-ignore, need to look into fixing "Object is possibly null" here
-    const matchedVars = linkUrl.match(variableRegex).map((variable: string) => {
-      const matchedVariable = vars.find((item: any) => item.name === variable.substring(4, variable.length - 1)) || { value: '', name: '' };
-      return {
-        name: variable,
-        value: variable.includes('targetLabel') ? target.label : variable.includes('targetValue') ? target.value : matchedVariable.value || variable,
-      };
-    });
-    matchedVars.forEach((match: any) => (url = url.replace(match.name, match.value)));
-
-    return url;
-  };
-
   handleClick = (_event: Event, targets: any) => {
     const { options } = this.props;
     if (!options.linkEnabled || !targets.length) {
@@ -161,11 +99,11 @@ export class Panel extends React.Component<Props, State> {
 
     const { labels, datasets } = this.chart.data;
     const targetIndex = targets[0]._index;
-    const url = this.generateUrl({
+    const url = createUrl({
       label: labels[targetIndex],
       value: datasets[0].data[targetIndex],
       metadata: datasets[0].metadata[targetIndex],
-    });
+    }, options);
 
     return window.open(url, options.linkTargetBlank ? '_blank' : 'currentWindow');
   };
