@@ -9,11 +9,14 @@ import { defaultProps, testData } from './testingData';
 
 configure({ adapter: new Adapter() });
 
-jest.mock('TimeSeries', () => {
-  return jest.fn().mockImplementation(() => ({
-    getFlotPairs: jest.fn(),
-    stats: {},
-  }));
+jest.mock('grafanaUtils', () => {
+  return {
+    TimeSeries: jest.fn().mockImplementation(() => ({
+      getFlotPairs: jest.fn(),
+      stats: {},
+    })),
+    kbn: jest.fn(),
+  };
 });
 
 describe('Piechart Panel', () => {

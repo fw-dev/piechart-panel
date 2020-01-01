@@ -86,6 +86,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
       "chartType": "pie",
       "cutoutPercentage": "80",
       "dataUnavailableMessage": "Data unavailable",
+      "format": "short",
       "highlightEnabled": true,
       "highlightValue": "percentage",
       "legendAlign": "center",

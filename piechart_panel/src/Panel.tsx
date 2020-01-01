@@ -17,10 +17,10 @@ export class Panel extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { options: { highlightEnabled, aliasColors }, data } = this.props;
+    const { options, data } = this.props;
     const { highlight, chartData } = this.state;
-
-    if (this.props.options !== prevProps.options) {
+    const optionsIsUpdated = JSON.stringify(prevProps.options) !== JSON.stringify(options);
+    if (optionsIsUpdated) {
       this.updateChart();
     }
 
@@ -28,11 +28,15 @@ export class Panel extends React.Component<Props, State> {
       this.updateHighlight();
     }
 
-    if (highlight.label !== prevState.highlight.label || highlightEnabled !== prevProps.options.highlightEnabled) {
+    if (
+      highlight.label !== prevState.highlight.label ||
+      options.highlightEnabled !== prevProps.options.highlightEnabled ||
+      options.format !== prevProps.options.format
+    ) {
       this.drawChart();
     }
 
-    if (data !== prevProps.data || aliasColors !== prevProps.options.aliasColors) {
+    if (data !== prevProps.data || optionsIsUpdated) {
       this.handleDataFormatting(data);
     }
   }
@@ -49,10 +53,13 @@ export class Panel extends React.Component<Props, State> {
     const timeSeries = data.series.map((serie: any) => createTimeSeries(serie, options));
     const chartData = formatChartData(timeSeries, data.series, options);
     const highlightData = formatHighlightData(timeSeries, options);
-    this.setState({
-      chartData,
-      highlightData,
-    }, () => this.drawChart());
+    this.setState(
+      {
+        chartData,
+        highlightData,
+      },
+      () => this.drawChart()
+    );
   };
 
   updateChartSettings = () => {
@@ -99,11 +106,14 @@ export class Panel extends React.Component<Props, State> {
 
     const { labels, datasets } = this.chart.data;
     const targetIndex = targets[0]._index;
-    const url = createUrl({
-      label: labels[targetIndex],
-      value: datasets[0].data[targetIndex],
-      metadata: datasets[0].metadata[targetIndex],
-    }, options);
+    const url = createUrl(
+      {
+        label: labels[targetIndex],
+        value: datasets[0].data[targetIndex],
+        metadata: datasets[0].metadata[targetIndex],
+      },
+      options
+    );
 
     return window.open(url, options.linkTargetBlank ? '_blank' : 'currentWindow');
   };

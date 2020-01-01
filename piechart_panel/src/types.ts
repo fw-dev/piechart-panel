@@ -23,6 +23,7 @@ export interface PanelOptions {
     [key: string]: string;
   };
   cutoutPercentage: string;
+  format: string;
 }
 
 export interface ChartConfig {

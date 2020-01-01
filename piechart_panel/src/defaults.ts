@@ -19,6 +19,7 @@ export const defaultPanelOptions: PanelOptions = {
   valueName: 'current',
   aliasColors: {},
   cutoutPercentage: '80',
+  format: 'short',
 };
 
 export const defaultChartConfig: ChartConfig = {

@@ -1,5 +1,5 @@
 // @ts-ignore
-import TimeSeries from './TimeSeries';
+import { TimeSeries, kbn } from './grafanaUtils';
 import { colors } from './defaults';
 
 export const formatHighlightData = (timeSeries: any, options: any) => {
@@ -9,7 +9,7 @@ export const formatHighlightData = (timeSeries: any, options: any) => {
     const value = serie.stats[options.valueName];
     return {
       label: serie.label,
-      value: options.highlightValue === 'percentage' ? percentage : value,
+      value: options.highlightValue === 'percentage' ? percentage : formatValue(value, options.format),
     };
   });
 
@@ -17,14 +17,16 @@ export const formatHighlightData = (timeSeries: any, options: any) => {
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
-  const { valueName, aliasColors } = options;
+  const { valueName, aliasColors, format } = options;
   const chartData = {
     labels: timeSeries.map((serie: any) => serie.alias),
     datasets: [
       {
-        data: timeSeries.map((serie: any) => serie.stats[valueName]),
+        data: timeSeries.map((serie: any) => serie.stats[valueName], format),
         backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
-        metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels).labels),
+        metadata: series.map((serie: any) => {
+          return serie.fields.find((field: any) => (field.labels ? field.labels.labels : field.label));
+        }),
       },
     ],
   };
@@ -60,4 +62,57 @@ export const createUrl = (target: any, options: any) => {
   matchedVars.forEach((match: any) => (url = url.replace(match.name, match.value)));
 
   return url;
+};
+
+const getDecimalsForValue = (value: any) => {
+  // if (typeof decimals === 'number') {
+  //   return { decimals, scaledDecimals: null };
+  // }
+
+  const delta = value / 2;
+  let dec = -Math.floor(Math.log(delta) / Math.LN10);
+
+  const magn = Math.pow(10, -dec);
+  const norm = delta / magn; // norm is between 1.0 and 10.0
+  let size;
+
+  if (norm < 1.5) {
+    size = 1;
+  } else if (norm < 3) {
+    size = 2;
+    // special case for 2.5, requires an extra decimal
+    if (norm > 2.25) {
+      size = 2.5;
+      ++dec;
+    }
+  } else if (norm < 7.5) {
+    size = 5;
+  } else {
+    size = 10;
+  }
+
+  size *= magn;
+
+  // reduce starting decimals if not needed
+  if (Math.floor(value) === value) {
+    dec = 0;
+  }
+
+  const result = {
+    decimals: 0,
+    scaledDecimals: 0,
+  };
+  result.decimals = Math.max(0, dec);
+  result.scaledDecimals = result.decimals - Math.floor(Math.log(size) / Math.LN10) + 2;
+
+  return result;
+};
+
+export const formatValue = (value: any, format: string) => {
+  const decimalInfo = getDecimalsForValue(value);
+  const formatFunc = kbn.valueFormats[format];
+  if (formatFunc) {
+    return formatFunc(value, decimalInfo.decimals, decimalInfo.scaledDecimals);
+  }
+  return value;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormField, Select, Switch, SeriesColorPicker } from '@grafana/ui';
+import { FormField, Select, Switch, SeriesColorPicker, UnitPicker } from '@grafana/ui';
 import { PanelEditorProps } from '@grafana/data';
 
 import { PanelOptions } from 'types';
@@ -49,10 +49,19 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     });
   };
 
+  handleUnitChange = (format: any) => {
+    const { onOptionsChange, options } = this.props;
+    onOptionsChange({
+      ...options,
+      format: format.value,
+    });
+  };
+
   generateOptions = (series: any) => series.map((serie: any) => ({ label: serie.name, value: serie.name }));
 
   render() {
     const { options, data } = this.props;
+    console.log(this.props);
     return (
       <>
         <div className="section gf-form-group">
@@ -65,6 +74,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             value={options.dataUnavailableMessage || ''}
             onChange={this.handleTextChange}
           />
+          <FormField labelWidth={8} label="Unit" inputEl={<UnitPicker onChange={this.handleUnitChange} />} />
           <FormField
             labelWidth={10}
             label="Chart type"
@@ -120,6 +130,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             <h5 className="section-heading">Custom colors</h5>
             {data.series.map((serie: any) => (
               <FormField
+                key={serie.name}
                 labelWidth={12}
                 label={serie.name}
                 inputEl={
