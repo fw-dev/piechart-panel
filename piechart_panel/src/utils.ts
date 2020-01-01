@@ -64,11 +64,8 @@ export const createUrl = (target: any, options: any) => {
   return url;
 };
 
+// taken from https://github.com/grafana/piechart-panel
 const getDecimalsForValue = (value: any) => {
-  // if (typeof decimals === 'number') {
-  //   return { decimals, scaledDecimals: null };
-  // }
-
   const delta = value / 2;
   let dec = -Math.floor(Math.log(delta) / Math.LN10);
 
