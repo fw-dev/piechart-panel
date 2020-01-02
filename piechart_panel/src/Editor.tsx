@@ -61,7 +61,6 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
 
   render() {
     const { options, data } = this.props;
-    console.log(this.props);
     return (
       <>
         <div className="section gf-form-group">
