@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "Grafana RSS Panel",
   "scripts": {
-    "move-dist": "mv dist/ ../dist/",
-    "build": "grafana-toolkit plugin:build && yarn move-dist",
+    "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
-    "dev": "grafana-toolkit plugin:dev && yarn move-dist",
+    "dev": "grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
   "author": "FileWave International",
