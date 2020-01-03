@@ -17,10 +17,10 @@ export class Panel extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { options: { highlightEnabled, aliasColors }, data } = this.props;
+    const { options, data } = this.props;
     const { highlight, chartData } = this.state;
-
-    if (this.props.options !== prevProps.options) {
+    const optionsIsUpdated = JSON.stringify(prevProps.options) !== JSON.stringify(options);
+    if (optionsIsUpdated) {
       this.updateChart();
     }
 
@@ -28,11 +28,15 @@ export class Panel extends React.Component<Props, State> {
       this.updateHighlight();
     }
 
-    if (highlight.label !== prevState.highlight.label || highlightEnabled !== prevProps.options.highlightEnabled) {
+    if (
+      highlight.label !== prevState.highlight.label ||
+      options.highlightEnabled !== prevProps.options.highlightEnabled ||
+      options.format !== prevProps.options.format
+    ) {
       this.drawChart();
     }
 
-    if (data !== prevProps.data || aliasColors !== prevProps.options.aliasColors) {
+    if (data !== prevProps.data || optionsIsUpdated) {
       this.handleDataFormatting(data);
     }
   }
@@ -40,7 +44,7 @@ export class Panel extends React.Component<Props, State> {
   updateHighlight = () => {
     const { selectedHighlight } = this.props.options;
     const { highlightData } = this.state;
-    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight) || defaultHighlight;
+    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight.label) || defaultHighlight;
     this.setState({ highlight });
   };
 
@@ -49,10 +53,13 @@ export class Panel extends React.Component<Props, State> {
     const timeSeries = data.series.map((serie: any) => createTimeSeries(serie, options));
     const chartData = formatChartData(timeSeries, data.series, options);
     const highlightData = formatHighlightData(timeSeries, options);
-    this.setState({
-      chartData,
-      highlightData,
-    }, () => this.drawChart());
+    this.setState(
+      {
+        chartData,
+        highlightData,
+      },
+      () => this.drawChart()
+    );
   };
 
   updateChartSettings = () => {
@@ -60,14 +67,14 @@ export class Panel extends React.Component<Props, State> {
     return {
       ...defaultChartConfig,
       data: this.state.chartData,
-      type: options.chartType,
+      type: options.chartType.value,
       plugins: [
         {
           afterDraw: () => {
             if (!data.series.length) {
               return this.drawDataUnavailableMessage();
             }
-            if (options.highlightEnabled && options.chartType === 'doughnut') {
+            if (options.highlightEnabled && options.chartType.value === 'doughnut') {
               return this.drawHighlight();
             }
           },
@@ -75,12 +82,12 @@ export class Panel extends React.Component<Props, State> {
       ],
       options: {
         ...defaultChartConfig.options,
-        cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
+        cutoutPercentage: options.chartType.value === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
         onClick: this.handleClick,
         legend: {
           display: options.legendEnabled,
-          position: options.legendPosition,
-          align: options.legendAlign,
+          position: options.legendPosition.value,
+          align: options.legendAlign.value,
           labels: {
             boxWidth: parseInt(options.legendBoxWidth, 0),
             fontSize: parseInt(options.legendFontSize, 0),
@@ -99,13 +106,16 @@ export class Panel extends React.Component<Props, State> {
 
     const { labels, datasets } = this.chart.data;
     const targetIndex = targets[0]._index;
-    const url = createUrl({
-      label: labels[targetIndex],
-      value: datasets[0].data[targetIndex],
-      metadata: datasets[0].metadata[targetIndex],
-    }, options);
+    const url = createUrl(
+      {
+        label: labels[targetIndex],
+        value: datasets[0].data[targetIndex],
+        metadata: datasets[0].metadata[targetIndex],
+      },
+      options
+    );
 
-    return window.open(url, options.linkTargetBlank ? '_blank' : 'currentWindow');
+    return window.open(url, options.linkTargetBlank ? '_blank' : '_self');
   };
 
   updateChart = () => {
@@ -113,7 +123,7 @@ export class Panel extends React.Component<Props, State> {
     if (this.chart.config.type !== options.chartType) {
       return this.drawChart();
     }
-    if (options.highlightEnabled && options.selectedHighlight) {
+    if (options.highlightEnabled && options.selectedHighlight.label) {
       this.updateHighlight();
     }
     this.chart.options = this.updateChartSettings().options;
