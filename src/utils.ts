@@ -53,13 +53,22 @@ export const createUrl = (target: any, options: any) => {
   const queryVariables = Object.keys(target.metadata).map((variable: string) => ({ name: variable, value: target.metadata[variable] }));
   const linkUrlVariables = linkUrl.match(variableRegex) || [];
 
-  const matchedVariables = linkUrlVariables.length ? linkUrlVariables.map((variable: string) => {
-    const matchedVariable = queryVariables.find((item: any) => item.name === variable.substring(4, variable.length - 1)) || { value: '', name: '' };
-    return {
-      name: variable,
-      value: variable.includes('targetLabel') ? target.label : variable.includes('targetValue') ? target.value : matchedVariable.value || variable,
-    };
-  }) : [];
+  const matchedVariables = linkUrlVariables.length
+    ? linkUrlVariables.map((variable: string) => {
+        const matchedVariable = queryVariables.find((item: any) => item.name === variable.substring(4, variable.length - 1)) || {
+          value: '',
+          name: '',
+        };
+        return {
+          name: variable,
+          value: variable.includes('targetLabel')
+            ? target.label
+            : variable.includes('targetValue')
+            ? target.value
+            : matchedVariable.value || variable,
+        };
+      })
+    : [];
 
   matchedVariables.forEach((match: any) => (url = url.replace(match.name, match.value)));
 
