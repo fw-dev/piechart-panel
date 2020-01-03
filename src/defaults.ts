@@ -2,10 +2,10 @@ import { PanelOptions, ChartConfig } from 'types';
 
 export const defaultPanelOptions: PanelOptions = {
   dataUnavailableMessage: 'Data unavailable',
-  chartType: 'pie',
+  chartType: { label: 'Pie', value: 'pie' },
   legendEnabled: true,
-  legendPosition: 'left',
-  legendAlign: 'center',
+  legendPosition: { label: 'Left', value: 'left' },
+  legendAlign: { label: 'Center', value: 'center' },
   legendBoxWidth: '40',
   legendFontSize: '12',
   legendUsePointStyle: false,
@@ -13,13 +13,13 @@ export const defaultPanelOptions: PanelOptions = {
   linkUrl: '',
   linkTargetBlank: true,
   highlightEnabled: true,
-  highlightValue: 'percentage',
-  selectedHighlight: '',
+  highlightValue: { label: 'Percentage', value: 'percentage' },
+  selectedHighlight: { label: '', value: '' },
   nullPointMode: 'connected',
   valueName: 'current',
   aliasColors: {},
   cutoutPercentage: '80',
-  format: 'short',
+  format: { value: 'short', label: 'short' },
 };
 
 export const defaultChartConfig: ChartConfig = {

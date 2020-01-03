@@ -4,10 +4,7 @@ export interface Props extends PanelProps<PanelOptions> {}
 
 export interface PanelOptions {
   dataUnavailableMessage: string;
-  chartType: string;
   legendEnabled: boolean;
-  legendPosition: string;
-  legendAlign: string;
   legendBoxWidth: string;
   legendFontSize: string;
   legendUsePointStyle: boolean;
@@ -15,15 +12,36 @@ export interface PanelOptions {
   linkUrl: string;
   linkTargetBlank: boolean;
   highlightEnabled: boolean;
-  highlightValue: string;
-  selectedHighlight: string;
   nullPointMode: string;
   valueName: string;
+  cutoutPercentage: string;
   aliasColors: {
     [key: string]: string;
   };
-  cutoutPercentage: string;
-  format: string;
+  chartType: {
+    label: string;
+    value: string;
+  };
+  legendPosition: {
+    label: string;
+    value: string;
+  };
+  legendAlign: {
+    label: string;
+    value: string;
+  };
+  highlightValue: {
+    label: string;
+    value: string;
+  };
+  selectedHighlight: {
+    label: string;
+    value: string;
+  };
+  format: {
+    label: string;
+    value: string;
+  };
 }
 
 export interface ChartConfig {

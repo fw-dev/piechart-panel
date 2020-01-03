@@ -9,7 +9,7 @@ export const formatHighlightData = (timeSeries: any, options: any) => {
     const value = serie.stats[options.valueName];
     return {
       label: serie.label,
-      value: options.highlightValue === 'percentage' ? percentage : formatValue(value, options.format),
+      value: options.highlightValue.value === 'percentage' ? percentage : formatValue(value, options.format.value),
     };
   });
 

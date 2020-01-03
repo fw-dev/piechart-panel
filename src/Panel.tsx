@@ -44,7 +44,7 @@ export class Panel extends React.Component<Props, State> {
   updateHighlight = () => {
     const { selectedHighlight } = this.props.options;
     const { highlightData } = this.state;
-    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight) || defaultHighlight;
+    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight.label) || defaultHighlight;
     this.setState({ highlight });
   };
 
@@ -67,14 +67,14 @@ export class Panel extends React.Component<Props, State> {
     return {
       ...defaultChartConfig,
       data: this.state.chartData,
-      type: options.chartType,
+      type: options.chartType.value,
       plugins: [
         {
           afterDraw: () => {
             if (!data.series.length) {
               return this.drawDataUnavailableMessage();
             }
-            if (options.highlightEnabled && options.chartType === 'doughnut') {
+            if (options.highlightEnabled && options.chartType.value === 'doughnut') {
               return this.drawHighlight();
             }
           },
@@ -82,12 +82,12 @@ export class Panel extends React.Component<Props, State> {
       ],
       options: {
         ...defaultChartConfig.options,
-        cutoutPercentage: options.chartType === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
+        cutoutPercentage: options.chartType.value === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
         onClick: this.handleClick,
         legend: {
           display: options.legendEnabled,
-          position: options.legendPosition,
-          align: options.legendAlign,
+          position: options.legendPosition.value,
+          align: options.legendAlign.value,
           labels: {
             boxWidth: parseInt(options.legendBoxWidth, 0),
             fontSize: parseInt(options.legendFontSize, 0),
@@ -123,7 +123,7 @@ export class Panel extends React.Component<Props, State> {
     if (this.chart.config.type !== options.chartType) {
       return this.drawChart();
     }
-    if (options.highlightEnabled && options.selectedHighlight) {
+    if (options.highlightEnabled && options.selectedHighlight.label) {
       this.updateHighlight();
     }
     this.chart.options = this.updateChartSettings().options;

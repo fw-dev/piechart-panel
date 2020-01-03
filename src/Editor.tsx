@@ -18,7 +18,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     const { onOptionsChange, options } = this.props;
     onOptionsChange({
       ...options,
-      [name]: option.value,
+      [name]: option,
     });
   };
 
@@ -53,7 +53,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     const { onOptionsChange, options } = this.props;
     onOptionsChange({
       ...options,
-      format: format.value,
+      format,
     });
   };
 
@@ -73,15 +73,13 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             value={options.dataUnavailableMessage || ''}
             onChange={this.handleTextChange}
           />
-          <FormField labelWidth={8} label="Unit" inputEl={<UnitPicker onChange={this.handleUnitChange} />} />
+          <FormField labelWidth={8} label="Unit" inputEl={<UnitPicker defaultValue={options.format.value} onChange={this.handleUnitChange} />} />
           <FormField
             labelWidth={10}
             label="Chart type"
-            inputEl={
-              <Select defaultValue={options.chartType} options={chartOptions.chartType} onChange={e => this.handleSelectChange(e, 'chartType')} />
-            }
+            inputEl={<Select value={options.chartType} options={chartOptions.chartType} onChange={e => this.handleSelectChange(e, 'chartType')} />}
           />
-          {options.chartType === 'doughnut' && (
+          {options.chartType.value === 'doughnut' && (
             <FormField
               labelWidth={10}
               label="Cutout size"
@@ -96,19 +94,13 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             labelWidth={8}
             label="Position"
             inputEl={
-              <Select
-                defaultValue={options.legendPosition}
-                options={chartOptions.position}
-                onChange={e => this.handleSelectChange(e, 'legendPosition')}
-              />
+              <Select value={options.legendPosition} options={chartOptions.position} onChange={e => this.handleSelectChange(e, 'legendPosition')} />
             }
           />
           <FormField
             labelWidth={8}
             label="Align"
-            inputEl={
-              <Select defaultValue={options.legendAlign} options={chartOptions.align} onChange={e => this.handleSelectChange(e, 'legendAlign')} />
-            }
+            inputEl={<Select value={options.legendAlign} options={chartOptions.align} onChange={e => this.handleSelectChange(e, 'legendAlign')} />}
           />
           <Switch label="Use point style" onChange={e => this.handleCheckboxChange(e, 'legendUsePointStyle')} checked={options.legendUsePointStyle} />
           {!options.legendUsePointStyle && (
@@ -168,12 +160,24 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           <FormField
             label="Highlight"
             labelWidth={8}
-            inputEl={<Select options={this.generateOptions(data.series)} onChange={e => this.handleSelectChange(e, 'selectedHighlight')} />}
+            inputEl={
+              <Select
+                value={options.selectedHighlight}
+                options={this.generateOptions(data.series)}
+                onChange={e => this.handleSelectChange(e, 'selectedHighlight')}
+              />
+            }
           />
           <FormField
             label="Highlight value"
             labelWidth={8}
-            inputEl={<Select options={chartOptions.highlightValue} onChange={e => this.handleSelectChange(e, 'highlightValue')} />}
+            inputEl={
+              <Select
+                value={options.highlightValue}
+                options={chartOptions.highlightValue}
+                onChange={e => this.handleSelectChange(e, 'highlightValue')}
+              />
+            }
           />
         </div>
       </>
