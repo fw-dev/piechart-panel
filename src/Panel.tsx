@@ -115,7 +115,7 @@ export class Panel extends React.Component<Props, State> {
       options
     );
 
-    return window.open(url, options.linkTargetBlank ? '_blank' : 'currentWindow');
+    return window.open(url, options.linkTargetBlank ? '_blank' : '_self');
   };
 
   updateChart = () => {

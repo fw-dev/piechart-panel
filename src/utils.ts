@@ -25,7 +25,7 @@ export const formatChartData = (timeSeries: any, series: any, options: any) => {
         data: timeSeries.map((serie: any) => serie.stats[valueName], format),
         backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
         metadata: series.map((serie: any) => {
-          return serie.fields.find((field: any) => (field.labels ? field.labels.labels : field.label));
+          return serie.fields.find((field: any) => (field.labels ? field.labels.labels : []));
         }),
       },
     ],
@@ -48,18 +48,20 @@ export const createTimeSeries = (serie: any, options: any) => {
 export const createUrl = (target: any, options: any) => {
   const { linkUrl } = options;
   let url = linkUrl;
+
   const variableRegex = /(\${__)(.*?)(})/g; // Match anything that's written between ${__...}
   const queryVariables = Object.keys(target.metadata).map((variable: string) => ({ name: variable, value: target.metadata[variable] }));
-  const vars = [...queryVariables];
-  // @ts-ignore, need to look into fixing "Object is possibly null" here
-  const matchedVars = linkUrl.match(variableRegex).map((variable: string) => {
-    const matchedVariable = vars.find((item: any) => item.name === variable.substring(4, variable.length - 1)) || { value: '', name: '' };
+  const linkUrlVariables = linkUrl.match(variableRegex) || [];
+
+  const matchedVariables = linkUrlVariables.length ? linkUrlVariables.map((variable: string) => {
+    const matchedVariable = queryVariables.find((item: any) => item.name === variable.substring(4, variable.length - 1)) || { value: '', name: '' };
     return {
       name: variable,
       value: variable.includes('targetLabel') ? target.label : variable.includes('targetValue') ? target.value : matchedVariable.value || variable,
     };
-  });
-  matchedVars.forEach((match: any) => (url = url.replace(match.name, match.value)));
+  }) : [];
+
+  matchedVariables.forEach((match: any) => (url = url.replace(match.name, match.value)));
 
   return url;
 };
