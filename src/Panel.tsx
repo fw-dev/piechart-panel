@@ -89,7 +89,7 @@ export class Panel extends React.Component<Props, State> {
           yPadding: +options.yPadding,
           callbacks: {
             title: () => options.tooltipTitle,
-          }
+          },
         },
         cutoutPercentage: options.chartType.value === 'doughnut' ? parseInt(options.cutoutPercentage, 0) : 0,
         onClick: this.handleClick,
