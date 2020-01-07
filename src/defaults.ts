@@ -43,9 +43,7 @@ export const defaultChartConfig: ChartConfig = {
       xPadding: 6,
       yPadding: 6,
       callbacks: {
-        title: () => {
-          return '';
-        },
+        title: () => '',
       },
     },
   },
