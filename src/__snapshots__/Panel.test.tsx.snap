@@ -93,7 +93,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         "label": "short",
         "value": "short",
       },
-      "highlightEnabled": true,
+      "highlightEnabled": false,
       "highlightValue": Object {
         "label": "Percentage",
         "value": "percentage",
@@ -118,7 +118,12 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         "label": "",
         "value": "",
       },
+      "tooltipColorsEnabled": true,
+      "tooltipEnabled": true,
+      "tooltipTitle": "",
       "valueName": "current",
+      "xPadding": 6,
+      "yPadding": 6,
     }
   }
   renderCounter={null}
