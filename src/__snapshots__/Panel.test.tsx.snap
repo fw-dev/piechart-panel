@@ -93,11 +93,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         "label": "short",
         "value": "short",
       },
-<<<<<<< HEAD:src/__snapshots__/Panel.test.tsx.snap
       "highlightEnabled": false,
-=======
-      "highlightEnabled": true,
->>>>>>> master:src/__snapshots__/Panel.test.tsx.snap
       "highlightValue": Object {
         "label": "Percentage",
         "value": "percentage",
@@ -122,12 +118,9 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         "label": "",
         "value": "",
       },
-<<<<<<< HEAD:src/__snapshots__/Panel.test.tsx.snap
       "tooltipColorsEnabled": true,
       "tooltipEnabled": true,
       "tooltipTitle": "",
-=======
->>>>>>> master:src/__snapshots__/Panel.test.tsx.snap
       "valueName": "current",
       "xPadding": 6,
       "yPadding": 6,
