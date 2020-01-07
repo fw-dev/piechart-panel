@@ -12,7 +12,7 @@ export const defaultPanelOptions: PanelOptions = {
   linkEnabled: false,
   linkUrl: '',
   linkTargetBlank: true,
-  highlightEnabled: true,
+  highlightEnabled: false,
   highlightValue: { label: 'Percentage', value: 'percentage' },
   selectedHighlight: { label: '', value: '' },
   nullPointMode: 'connected',
@@ -20,6 +20,11 @@ export const defaultPanelOptions: PanelOptions = {
   aliasColors: {},
   cutoutPercentage: '80',
   format: { value: 'short', label: 'short' },
+  tooltipTitle: '',
+  tooltipEnabled: true,
+  tooltipColorsEnabled: true,
+  xPadding: 6,
+  yPadding: 6,
 };
 
 export const defaultChartConfig: ChartConfig = {
@@ -31,6 +36,15 @@ export const defaultChartConfig: ChartConfig = {
     maintainAspectRatio: false,
     animation: {
       animateRotate: false,
+    },
+    tooltips: {
+      enabled: true,
+      displayColors: true,
+      xPadding: 6,
+      yPadding: 6,
+      callbacks: {
+        title: () => '',
+      },
     },
   },
 };

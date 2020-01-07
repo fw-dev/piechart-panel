@@ -15,6 +15,11 @@ export interface PanelOptions {
   nullPointMode: string;
   valueName: string;
   cutoutPercentage: string;
+  tooltipTitle: string;
+  tooltipEnabled: boolean;
+  tooltipColorsEnabled: boolean;
+  xPadding: number;
+  yPadding: number;
   aliasColors: {
     [key: string]: string;
   };
@@ -53,6 +58,15 @@ export interface ChartConfig {
     cutoutPercentage: number;
     animation: {
       animateRotate: boolean;
+    };
+    tooltips: {
+      enabled: boolean;
+      displayColors: boolean;
+      xPadding: number;
+      yPadding: number;
+      callbacks: {
+        title: () => string;
+      };
     };
   };
 }
