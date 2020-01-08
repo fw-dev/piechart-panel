@@ -88,6 +88,37 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           )}
         </div>
         <div className="section gf-form-group">
+          <h5 className="section-heading">Tooltip</h5>
+          <FormField
+            labelWidth={10}
+            label="Display tooltip"
+            inputEl={<Switch label="" onChange={e => this.handleCheckboxChange(e, 'tooltipEnabled')} checked={options.tooltipEnabled} />}
+          />
+          <FormField
+            labelWidth={10}
+            label="Display colors"
+            inputEl={<Switch label="" onChange={e => this.handleCheckboxChange(e, 'tooltipColorsEnabled')} checked={options.tooltipColorsEnabled} />}
+          />
+          <FormField
+            labelWidth={10}
+            label="Tooltip Title"
+            type="text"
+            name="tooltipTitle"
+            value={options.tooltipTitle || ''}
+            onChange={this.handleTextChange}
+          />
+          <FormField
+            labelWidth={10}
+            label="x Padding"
+            inputEl={<RangeInput name="xPadding" min="0" max="20" value={options.xPadding} onChange={this.handleTextChange} />}
+          />
+          <FormField
+            labelWidth={10}
+            label="y Padding"
+            inputEl={<RangeInput name="yPadding" min="0" max="20" value={options.yPadding} onChange={this.handleTextChange} />}
+          />
+        </div>
+        <div className="section gf-form-group">
           <h5 className="section-heading">Legend</h5>
           <Switch label="Display legend" onChange={e => this.handleCheckboxChange(e, 'legendEnabled')} checked={options.legendEnabled} />
           <FormField
@@ -137,6 +168,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
                         onClick={showColorPicker}
                         style={{
                           backgroundColor: options.aliasColors[serie.name] || '#dde4ed',
+                          marginLeft: '2px',
                           width: '35px',
                           height: '35px',
                         }}
