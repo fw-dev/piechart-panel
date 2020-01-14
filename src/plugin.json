@@ -1,7 +1,7 @@
 {
   "type": "panel",
   "name": "FileWave Piechart",
-  "id": "filewave-piechart-panel",
+  "id": "piechart-panel",
 
   "info": {
     "description": "FileWave Piechart Panel",
