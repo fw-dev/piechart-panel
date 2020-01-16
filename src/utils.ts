@@ -33,7 +33,7 @@ export const mergeAliases = (series: any, aliasColors: any) => {
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
   const { valueName, aliasColors } = options;
   const labels = mergeAliases(timeSeries, aliasColors);
-  const data = labels.map((_label: string, i: number) => timeSeries[i] ? timeSeries[i].stats[valueName] : 0);
+  const data = labels.map((_label: string, i: number) => (timeSeries[i] ? timeSeries[i].stats[valueName] : 0));
   const chartData = {
     labels,
     datasets: [

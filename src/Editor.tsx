@@ -63,7 +63,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     const options = aliases.map((option: string) => ({ label: option, value: option }));
 
     return options;
-  }
+  };
 
   render() {
     const { options, data } = this.props;
