@@ -3,17 +3,24 @@ import { TimeSeries, kbn } from './grafanaUtils';
 import { colors } from './defaults';
 
 export const formatHighlightData = (timeSeries: any, options: any) => {
+  const { valueName, highlightValue, selectedHighlight, format } = options;
   const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
-  const highlightData = timeSeries.map((serie: any) => {
+  const series = timeSeries.map((serie: any) => {
     const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
-    const value = serie.stats[options.valueName];
+    const value = serie.stats[valueName];
     return {
       label: serie.label,
-      value: options.highlightValue.value === 'percentage' ? percentage : formatValue(value, options.format.value),
+      value: highlightValue.value === 'percentage' ? percentage : formatValue(value, format.value),
     };
   });
 
-  return highlightData;
+  return {
+    series,
+    fallback: {
+      label: selectedHighlight.label,
+      value: `0${highlightValue.value === 'percentage' ? '%' : ''}`,
+    },
+  };
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
