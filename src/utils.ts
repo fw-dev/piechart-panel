@@ -23,14 +23,23 @@ export const formatHighlightData = (timeSeries: any, options: any) => {
   };
 };
 
+export const mergeAliases = (series: any, aliasColors: any) => {
+  const aliasesFromSettings = Object.keys(aliasColors);
+  const aliasesFromData = series.map((serie: any) => serie.alias).filter((alias: string) => alias !== undefined);
+
+  return [...new Set([...aliasesFromSettings, ...aliasesFromData])];
+};
+
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
-  const { valueName, aliasColors, format } = options;
+  const { valueName, aliasColors } = options;
+  const labels = mergeAliases(timeSeries, aliasColors);
+  const data = labels.map((_label: string, i: number) => timeSeries[i] ? timeSeries[i].stats[valueName] : 0);
   const chartData = {
-    labels: timeSeries.map((serie: any) => serie.alias),
+    labels,
     datasets: [
       {
-        data: timeSeries.map((serie: any) => serie.stats[valueName], format),
-        backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
+        data,
+        backgroundColor: labels.map((label: any, i: number) => aliasColors[label] || colors[i]),
         metadata: series.map((serie: any) => {
           return serie.fields.find((field: any) => (field.labels ? field.labels.labels : []));
         }),
