@@ -40,9 +40,7 @@ export const formatChartData = (timeSeries: any, series: any, options: any) => {
       {
         data,
         backgroundColor: labels.map((label: any, i: number) => aliasColors[label] || colors[i]),
-        metadata: series.map((serie: any) => {
-          return serie.fields.find((field: any) => (field.labels ? field.labels.labels : []));
-        }),
+        metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels || [])),
       },
     ],
   };
