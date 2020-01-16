@@ -27,7 +27,7 @@ export const mergeAliases = (series: any, aliasColors: any) => {
   const aliasesFromSettings = Object.keys(aliasColors);
   const aliasesFromData = series.map((serie: any) => serie.alias).filter((alias: string) => alias !== undefined);
 
-  return [...new Set([...aliasesFromSettings, ...aliasesFromData])];
+  return [...new Set([...aliasesFromData, ...aliasesFromSettings])];
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
