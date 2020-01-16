@@ -17,7 +17,7 @@
       {"name": "GitHub", "url": "https://github.com/fw-dev/piechart-panel"}
     ],
     "screenshots": [],
-    "version": "%VERSION%",
+    "version": "1.0.2",
     "updated": "%TODAY%"
   },
 
