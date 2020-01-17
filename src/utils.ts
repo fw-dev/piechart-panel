@@ -3,30 +3,44 @@ import { TimeSeries, kbn } from './grafanaUtils';
 import { colors } from './defaults';
 
 export const formatHighlightData = (timeSeries: any, options: any) => {
+  const { valueName, highlightValue, selectedHighlight, format } = options;
   const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
-  const highlightData = timeSeries.map((serie: any) => {
+  const series = timeSeries.map((serie: any) => {
     const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
-    const value = serie.stats[options.valueName];
+    const value = serie.stats[valueName];
     return {
       label: serie.label,
-      value: options.highlightValue.value === 'percentage' ? percentage : formatValue(value, options.format.value),
+      value: highlightValue.value === 'percentage' ? percentage : formatValue(value, format.value),
     };
   });
 
-  return highlightData;
+  return {
+    series,
+    fallback: {
+      label: selectedHighlight.label,
+      value: `0${highlightValue.value === 'percentage' ? '%' : formatValue(0, format.value)}`,
+    },
+  };
+};
+
+export const mergeAliases = (series: any, aliasColors: any) => {
+  const aliasesFromSettings = Object.keys(aliasColors);
+  const aliasesFromData = series.map((serie: any) => serie.alias).filter((alias: string) => alias !== undefined);
+
+  return [...new Set([...aliasesFromData, ...aliasesFromSettings])];
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
-  const { valueName, aliasColors, format } = options;
+  const { valueName, aliasColors } = options;
+  const labels = mergeAliases(timeSeries, aliasColors);
+  const data = labels.map((_label: string, i: number) => (timeSeries[i] ? timeSeries[i].stats[valueName] : 0));
   const chartData = {
-    labels: timeSeries.map((serie: any) => serie.alias),
+    labels,
     datasets: [
       {
-        data: timeSeries.map((serie: any) => serie.stats[valueName], format),
-        backgroundColor: timeSeries.map((serie: any, i: number) => aliasColors[serie.alias] || colors[i]),
-        metadata: series.map((serie: any) => {
-          return serie.fields.find((field: any) => (field.labels ? field.labels.labels : []));
-        }),
+        data,
+        backgroundColor: labels.map((label: any, i: number) => aliasColors[label] || colors[i]),
+        metadata: series.map((serie: any) => serie.fields.find((field: any) => field.labels).labels || {}),
       },
     ],
   };

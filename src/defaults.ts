@@ -51,7 +51,7 @@ export const defaultChartConfig: ChartConfig = {
 
 export const defaultHighlight = {
   label: '',
-  value: 0,
+  value: '',
 };
 
 export const initialState = {
@@ -65,7 +65,10 @@ export const initialState = {
     ],
   },
   highlight: defaultHighlight,
-  highlightData: [defaultHighlight],
+  highlightData: {
+    series: [defaultHighlight],
+    fallback: defaultHighlight,
+  },
 };
 
 export const chartOptions = {

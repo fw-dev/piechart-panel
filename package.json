@@ -1,6 +1,6 @@
 {
   "name": "filewave-piechart-panel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Grafana RSS Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",

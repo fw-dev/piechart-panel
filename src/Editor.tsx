@@ -4,6 +4,7 @@ import { PanelEditorProps } from '@grafana/data';
 
 import { PanelOptions } from 'types';
 import { chartOptions } from 'defaults';
+import { mergeAliases } from 'utils';
 import 'css/filewave-piechart-panel.css';
 
 const RangeInput = ({ value, ...props }: any) => (
@@ -57,7 +58,12 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
     });
   };
 
-  generateOptions = (series: any) => series.map((serie: any) => ({ label: serie.name, value: serie.name }));
+  getHighlightOptions = () => {
+    const aliases = mergeAliases(this.props.data.series, this.props.options.aliasColors);
+    const options = aliases.map((option: string) => ({ label: option, value: option }));
+
+    return options;
+  };
 
   render() {
     const { options, data } = this.props;
@@ -195,7 +201,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
             inputEl={
               <Select
                 value={options.selectedHighlight}
-                options={this.generateOptions(data.series)}
+                options={this.getHighlightOptions()}
                 onChange={e => this.handleSelectChange(e, 'selectedHighlight')}
               />
             }

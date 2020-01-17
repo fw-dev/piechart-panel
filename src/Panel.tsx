@@ -3,7 +3,7 @@ import React from 'react';
 import Chart from 'chart.js';
 
 import { State, Props } from './types';
-import { defaultChartConfig, initialState, defaultHighlight } from './defaults';
+import { defaultChartConfig, initialState } from './defaults';
 import { formatChartData, formatHighlightData, createTimeSeries, createUrl } from './utils';
 import 'css/filewave-piechart-panel.css';
 
@@ -44,7 +44,7 @@ export class Panel extends React.Component<Props, State> {
   updateHighlight = () => {
     const { selectedHighlight } = this.props.options;
     const { highlightData } = this.state;
-    const highlight = highlightData.find(highlight => highlight.label === selectedHighlight.label) || defaultHighlight;
+    const highlight = highlightData.series.find(highlight => highlight.label === selectedHighlight.label) || highlightData.fallback;
     this.setState({ highlight });
   };
 

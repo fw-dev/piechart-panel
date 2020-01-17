@@ -74,7 +74,10 @@ export interface ChartConfig {
 export interface State {
   chartData: ChartData;
   highlight: Highlight;
-  highlightData: Highlight[];
+  highlightData: {
+    series: Highlight[];
+    fallback: Highlight;
+  };
 }
 
 export interface DataSet {
@@ -89,5 +92,5 @@ export interface ChartData {
 
 export interface Highlight {
   label: string;
-  value: string | number;
+  value: string;
 }
