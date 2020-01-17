@@ -18,7 +18,7 @@ export const formatHighlightData = (timeSeries: any, options: any) => {
     series,
     fallback: {
       label: selectedHighlight.label,
-      value: `0${highlightValue.value === 'percentage' ? '%' : ''}`,
+      value: `0${highlightValue.value === 'percentage' ? '%' : formatValue(0, format.value)}`,
     },
   };
 };
