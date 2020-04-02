@@ -1,0 +1,28 @@
+{
+  "type": "panel",
+  "name": "FileWave Piechart",
+  "id": "filewave-piechart-panel",
+
+  "info": {
+    "description": "FileWave Piechart Panel",
+    "author": {
+      "name": "FileWave International"
+    },
+    "keywords": ["FileWave", "Piechart"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/fw-dev/piechart-panel"}
+    ],
+    "screenshots": [],
+    "version": "1.0.2",
+    "updated": "2020-01-17"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "6.5.x",
+    "plugins": []
+  }
+}
