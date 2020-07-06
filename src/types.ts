@@ -12,6 +12,8 @@ export interface PanelOptions {
   linkUrl: string;
   linkTargetBlank: boolean;
   highlightEnabled: boolean;
+  highlightCustomLabel: string;
+  highlightCustomExpression: string;
   nullPointMode: string;
   valueName: string;
   cutoutPercentage: string;

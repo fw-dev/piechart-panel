@@ -93,6 +93,8 @@ exports[`Piechart Panel when doing a basic render with data should render correc
         "label": "short",
         "value": "short",
       },
+      "highlightCustomExpression": "",
+      "highlightCustomLabel": "",
       "highlightEnabled": false,
       "highlightValue": Object {
         "label": "Percentage",

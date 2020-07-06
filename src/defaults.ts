@@ -13,6 +13,8 @@ export const defaultPanelOptions: PanelOptions = {
   linkUrl: '',
   linkTargetBlank: true,
   highlightEnabled: false,
+  highlightCustomLabel: '',
+  highlightCustomExpression: '',
   highlightValue: { label: 'Percentage', value: 'percentage' },
   selectedHighlight: { label: '', value: '' },
   nullPointMode: 'connected',

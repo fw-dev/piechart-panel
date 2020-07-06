@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormField, Select, Switch, SeriesColorPicker, UnitPicker } from '@grafana/ui';
+import { FormField, Select, Switch, SeriesColorPicker, UnitPicker, PanelOptionsGroup } from '@grafana/ui';
 import { PanelEditorProps } from '@grafana/data';
 
 import { PanelOptions } from 'types';
@@ -61,7 +61,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
   getHighlightOptions = () => {
     const aliases = mergeAliases(this.props.data.series, this.props.options.aliasColors);
     const options = aliases.map((option: string) => ({ label: option, value: option }));
-
+    options.push({ label: 'Custom', value: 'custom' });
     return options;
   };
 
@@ -192,32 +192,56 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           <FormField labelWidth={8} label="URL" name="linkUrl" type="text" onChange={this.handleTextChange} value={options.linkUrl || ''} />
           <Switch label="Open in a new tab" onChange={e => this.handleCheckboxChange(e, 'linkTargetBlank')} checked={options.linkTargetBlank} />
         </div>
-        <div className="section gf-form-group">
-          <h5 className="section-heading">Highlight</h5>
-          <Switch label="Display highlight" onChange={e => this.handleCheckboxChange(e, 'highlightEnabled')} checked={options.highlightEnabled} />
-          <FormField
-            label="Highlight"
-            labelWidth={8}
-            inputEl={
-              <Select
-                value={options.selectedHighlight}
-                options={this.getHighlightOptions()}
-                onChange={e => this.handleSelectChange(e, 'selectedHighlight')}
+        <PanelOptionsGroup title={'Highlight'}>
+          <div className="section gf-form-group">
+            <Switch label="Display highlight" onChange={e => this.handleCheckboxChange(e, 'highlightEnabled')} checked={options.highlightEnabled} />
+            <FormField
+              label="Highlight"
+              labelWidth={8}
+              inputEl={
+                <Select
+                  value={options.selectedHighlight}
+                  options={this.getHighlightOptions()}
+                  onChange={e => this.handleSelectChange(e, 'selectedHighlight')}
+                />
+              }
+            />
+            {options.selectedHighlight.value !== 'custom' && (
+              <FormField
+                label="Highlight value"
+                labelWidth={8}
+                inputEl={
+                  <Select
+                    value={options.highlightValue}
+                    options={chartOptions.highlightValue}
+                    onChange={e => this.handleSelectChange(e, 'highlightValue')}
+                  />
+                }
               />
-            }
-          />
-          <FormField
-            label="Highlight value"
-            labelWidth={8}
-            inputEl={
-              <Select
-                value={options.highlightValue}
-                options={chartOptions.highlightValue}
-                onChange={e => this.handleSelectChange(e, 'highlightValue')}
-              />
-            }
-          />
-        </div>
+            )}
+            {options.selectedHighlight.value === 'custom' && (
+              <div className="section gf-form-group">
+                <FormField
+                  labelWidth={12}
+                  label="Highlight Label"
+                  name="highlightCustomLabel"
+                  type="text"
+                  onChange={this.handleTextChange}
+                  value={options.highlightCustomLabel || ''}
+                />
+                <FormField
+                  labelWidth={12}
+                  inputWidth={50}
+                  label="Highlight Expression"
+                  name="highlightCustomExpression"
+                  type="text"
+                  onChange={this.handleTextChange}
+                  value={options.highlightCustomExpression || ''}
+                />
+              </div>
+            )}
+          </div>
+        </PanelOptionsGroup>
       </>
     );
   }
