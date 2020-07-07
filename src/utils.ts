@@ -172,7 +172,7 @@ const getDecimalsForValue = (value: any) => {
 };
 
 export const formatValue = (value: any, format: string) => {
-  if (!value) {
+  if (value != 0 && !value) {
     return undefined;
   }
   const decimalInfo = getDecimalsForValue(value);
