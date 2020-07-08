@@ -9,6 +9,7 @@ export interface PanelOptions {
   legendFontSize: string;
   legendUsePointStyle: boolean;
   linkEnabled: boolean;
+  chartOrder: string;
   linkUrl: string;
   linkTargetBlank: boolean;
   highlightEnabled: boolean;

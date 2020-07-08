@@ -68,11 +68,17 @@ export const mergeAliases = (series: any, aliasColors: any) => {
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
-  const { valueName, aliasColors } = options;
-  // order by value
+  const { valueName, aliasColors, chartOrder } = options;
+
+  const sortingArr = chartOrder.toLowerCase().split(/[ ,]+/);
   timeSeries = timeSeries.sort((a: any, b: any) => {
-    return b.stats[options.valueName] - a.stats[options.valueName];
+    const idx_a = sortingArr.indexOf(a.alias.toLowerCase());
+    const idx_b = sortingArr.indexOf(b.alias.toLowerCase());
+    const final_idx_a = idx_a === -1 ? timeSeries.length : idx_a;
+    const final_idx_b = idx_b === -1 ? timeSeries.length : idx_b;
+    return final_idx_a - final_idx_b;
   });
+
   const labels = mergeAliases(timeSeries, aliasColors);
   const data = labels.map((_label: string, i: number) => (timeSeries[i] ? timeSeries[i].stats[valueName] : 0));
   const chartData = {

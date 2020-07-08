@@ -83,6 +83,7 @@ exports[`Piechart Panel when doing a basic render with data should render correc
   options={
     Object {
       "aliasColors": Object {},
+      "chartOrder": "",
       "chartType": Object {
         "label": "Pie",
         "value": "pie",

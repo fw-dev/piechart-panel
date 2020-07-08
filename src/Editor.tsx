@@ -92,6 +92,14 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
               inputEl={<RangeInput name="cutoutPercentage" min="10" max="90" value={options.cutoutPercentage} onChange={this.handleTextChange} />}
             />
           )}
+          <FormField
+            labelWidth={8}
+            label="Char Order"
+            name="chartOrder"
+            type="text"
+            onChange={this.handleTextChange}
+            value={options.chartOrder || ''}
+          />
         </div>
         <div className="section gf-form-group">
           <h5 className="section-heading">Tooltip</h5>
