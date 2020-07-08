@@ -72,11 +72,11 @@ export const formatChartData = (timeSeries: any, series: any, options: any) => {
 
   const sortingArr = chartOrder.toLowerCase().split(/[ ,]+/);
   timeSeries = timeSeries.sort((a: any, b: any) => {
-    const idx_a = sortingArr.indexOf(a.alias.toLowerCase());
-    const idx_b = sortingArr.indexOf(b.alias.toLowerCase());
-    const final_idx_a = idx_a === -1 ? timeSeries.length : idx_a;
-    const final_idx_b = idx_b === -1 ? timeSeries.length : idx_b;
-    return final_idx_a - final_idx_b;
+    let idxA = sortingArr.indexOf(a.alias.toLowerCase());
+    let idxB = sortingArr.indexOf(b.alias.toLowerCase());
+    idxA = idxA === -1 ? timeSeries.length : idxA;
+    idxB = idxB === -1 ? timeSeries.length : idxB;
+    return idxA - idxB;
   });
 
   const labels = mergeAliases(timeSeries, aliasColors);
@@ -178,7 +178,7 @@ const getDecimalsForValue = (value: any) => {
 };
 
 export const formatValue = (value: any, format: string) => {
-  if (value != 0 && !value) {
+  if (value !== 0 && !value) {
     return undefined;
   }
   const decimalInfo = getDecimalsForValue(value);

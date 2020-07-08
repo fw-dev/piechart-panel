@@ -94,7 +94,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           )}
           <FormField
             labelWidth={8}
-            label="Char Order"
+            label="Chart Order"
             name="chartOrder"
             type="text"
             onChange={this.handleTextChange}
@@ -200,7 +200,7 @@ export class Editor extends React.PureComponent<PanelEditorProps<PanelOptions>> 
           <FormField labelWidth={8} label="URL" name="linkUrl" type="text" onChange={this.handleTextChange} value={options.linkUrl || ''} />
           <Switch label="Open in a new tab" onChange={e => this.handleCheckboxChange(e, 'linkTargetBlank')} checked={options.linkTargetBlank} />
         </div>
-        <PanelOptionsGroup title={'Highlight'}>
+        <PanelOptionsGroup title="Highlight">
           <div className="section gf-form-group">
             <Switch label="Display highlight" onChange={e => this.handleCheckboxChange(e, 'highlightEnabled')} checked={options.highlightEnabled} />
             <FormField
