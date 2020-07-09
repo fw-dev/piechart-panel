@@ -9,9 +9,12 @@ export interface PanelOptions {
   legendFontSize: string;
   legendUsePointStyle: boolean;
   linkEnabled: boolean;
+  chartOrder: string;
   linkUrl: string;
   linkTargetBlank: boolean;
   highlightEnabled: boolean;
+  highlightCustomLabel: string;
+  highlightCustomExpression: string;
   nullPointMode: string;
   valueName: string;
   cutoutPercentage: string;

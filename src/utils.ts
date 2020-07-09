@@ -1,37 +1,84 @@
 // @ts-ignore
 import { TimeSeries, kbn } from './grafanaUtils';
 import { colors } from './defaults';
+import { parse } from 'mathjs';
 
 export const formatHighlightData = (timeSeries: any, options: any) => {
-  const { valueName, highlightValue, selectedHighlight, format } = options;
+  const { valueName, highlightValue, selectedHighlight, highlightCustomLabel, format } = options;
   const total = timeSeries.reduce((x: number, y: any) => x + y.stats.total, 0);
-  const series = timeSeries.map((serie: any) => {
-    const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
-    const value = serie.stats[valueName];
-    return {
-      label: serie.label,
-      value: highlightValue.value === 'percentage' ? percentage : formatValue(value, format.value),
-    };
-  });
+  if (options.selectedHighlight.value === 'custom') {
+    let res = 0;
+    try {
+      const node = parse(options.highlightCustomExpression);
+      const parametersFromExpression = node
+        .filter((node: any) => {
+          return node.isSymbolNode;
+        })
+        .reduce((obj: any, item: any) => {
+          obj[item.name.toLowerCase()] = 0;
+          return obj;
+        }, {});
 
-  return {
-    series,
-    fallback: {
-      label: selectedHighlight.label,
-      value: `0${highlightValue.value === 'percentage' ? '%' : formatValue(0, format.value)}`,
-    },
-  };
+      const ds = timeSeries.reduce((obj: any, item: any) => {
+        obj[item.label.toLowerCase()] = item.stats[options.valueName];
+        return obj;
+      }, {});
+
+      const code = node.compile();
+      res = code.evaluate({ ...parametersFromExpression, ...ds, total });
+    } catch (error) {
+      res = NaN;
+    }
+    return {
+      series: [
+        {
+          label: highlightCustomLabel,
+          value: formatValue(res, format.value),
+        },
+      ],
+      fallback: {
+        label: selectedHighlight === 'custom' ? highlightCustomLabel : selectedHighlight.label,
+        value: `0${highlightValue.value === 'percentage' ? '%' : formatValue(0, format.value)}`,
+      },
+    };
+  } else {
+    const series = timeSeries.map((serie: any) => {
+      const percentage = `${(serie.stats[options.valueName] / (total / 100) || 0).toFixed()}%`;
+      const value = serie.stats[valueName];
+      return {
+        label: serie.label,
+        value: highlightValue.value === 'percentage' ? percentage : formatValue(value, format.value),
+      };
+    });
+
+    return {
+      series,
+      fallback: {
+        label: selectedHighlight === 'custom' ? highlightCustomLabel : selectedHighlight.label,
+        value: `0${highlightValue.value === 'percentage' ? '%' : formatValue(0, format.value)}`,
+      },
+    };
+  }
 };
 
 export const mergeAliases = (series: any, aliasColors: any) => {
   const aliasesFromSettings = Object.keys(aliasColors);
   const aliasesFromData = series.map((serie: any) => serie.alias).filter((alias: string) => alias !== undefined);
-
   return [...new Set([...aliasesFromData, ...aliasesFromSettings])];
 };
 
 export const formatChartData = (timeSeries: any, series: any, options: any) => {
-  const { valueName, aliasColors } = options;
+  const { valueName, aliasColors, chartOrder } = options;
+
+  const sortingArr = chartOrder.toLowerCase().split(/[ ,]+/);
+  timeSeries = timeSeries.sort((a: any, b: any) => {
+    let idxA = sortingArr.indexOf(a.alias.toLowerCase());
+    let idxB = sortingArr.indexOf(b.alias.toLowerCase());
+    idxA = idxA === -1 ? timeSeries.length : idxA;
+    idxB = idxB === -1 ? timeSeries.length : idxB;
+    return idxA - idxB;
+  });
+
   const labels = mergeAliases(timeSeries, aliasColors);
   const data = labels.map((_label: string, i: number) => (timeSeries[i] ? timeSeries[i].stats[valueName] : 0));
   const chartData = {
@@ -131,6 +178,9 @@ const getDecimalsForValue = (value: any) => {
 };
 
 export const formatValue = (value: any, format: string) => {
+  if (value !== 0 && !value) {
+    return undefined;
+  }
   const decimalInfo = getDecimalsForValue(value);
   const formatFunc = kbn.valueFormats[format];
   if (formatFunc) {

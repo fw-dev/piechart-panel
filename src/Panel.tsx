@@ -30,6 +30,7 @@ export class Panel extends React.Component<Props, State> {
 
     if (
       highlight.label !== prevState.highlight.label ||
+      options.highlightCustomLabel !== prevProps.options.highlightCustomLabel ||
       options.highlightEnabled !== prevProps.options.highlightEnabled ||
       options.format !== prevProps.options.format
     ) {
@@ -44,7 +45,13 @@ export class Panel extends React.Component<Props, State> {
   updateHighlight = () => {
     const { selectedHighlight } = this.props.options;
     const { highlightData } = this.state;
-    const highlight = highlightData.series.find(highlight => highlight.label === selectedHighlight.label) || highlightData.fallback;
+
+    let highlight;
+    if (selectedHighlight.value === 'custom') {
+      highlight = highlightData.series[0];
+    } else {
+      highlight = highlightData.series.find(highlight => highlight.label === selectedHighlight.label) || highlightData.fallback;
+    }
     this.setState({ highlight });
   };
 

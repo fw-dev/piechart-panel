@@ -3,6 +3,7 @@ import { PanelOptions, ChartConfig } from 'types';
 export const defaultPanelOptions: PanelOptions = {
   dataUnavailableMessage: 'Data unavailable',
   chartType: { label: 'Pie', value: 'pie' },
+  chartOrder: '',
   legendEnabled: true,
   legendPosition: { label: 'Left', value: 'left' },
   legendAlign: { label: 'Center', value: 'center' },
@@ -13,6 +14,8 @@ export const defaultPanelOptions: PanelOptions = {
   linkUrl: '',
   linkTargetBlank: true,
   highlightEnabled: false,
+  highlightCustomLabel: '',
+  highlightCustomExpression: '',
   highlightValue: { label: 'Percentage', value: 'percentage' },
   selectedHighlight: { label: '', value: '' },
   nullPointMode: 'connected',
