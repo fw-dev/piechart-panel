@@ -28,7 +28,7 @@
   "dependencies": {
     "mathjs": "^7.0.2",
     "@types/mathjs": "^6.0.5",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   }
